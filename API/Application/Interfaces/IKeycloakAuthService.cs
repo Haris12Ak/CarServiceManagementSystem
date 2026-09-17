@@ -1,0 +1,14 @@
+﻿using Application.Requests;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Application.Interfaces
+{
+    public interface IKeycloakAuthService
+    {
+        Task AuthenticateAdminAsync();
+        Task<string> CreateUserAsync(User user, bool forcePasswordUpdated);
+        Task DeleteUserAsync(string keycloakUserId);
+    }
+}

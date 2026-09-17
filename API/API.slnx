@@ -3,6 +3,7 @@
     <File Path="docker-compose.yml" />
   </Folder>
   <Project Path="API/API.csproj" />
+  <Project Path="Application/Application.csproj" Id="ff74cb6b-bdb7-42e0-a5c7-ad2b9ea07f41" />
   <Project Path="Domain/Domain.csproj" Id="425e2da1-fc58-4a60-aa3d-cb2c44abb011" />
   <Project Path="Persistence/Persistence.csproj" Id="73975efa-8dfe-4db4-9e06-516e5612d047" />
 </Solution>
