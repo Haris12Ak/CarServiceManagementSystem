@@ -75,20 +75,25 @@ namespace Application.Services
             {
                 _logger.LogError(ex, "Company registration failed. Attempting to remove Keycloak user {UserId}", keycloakUserId);
 
-                if (!string.IsNullOrEmpty(keycloakUserId))
-                {
-                    try
-                    {
-                        await _keycloakAuthService.DeleteUserAsync(keycloakUserId);
-                        _logger.LogInformation("Compensation: deleted Keycloak user {UserId}", keycloakUserId);
-                    }
-                    catch (Exception delEx)
-                    {
-                        _logger.LogError(delEx, "Failed to delete Keycloak user {UserId} after rollback. Schedule manual/automatic cleanup.", keycloakUserId);
-                    }
-                }
+                await RollbackKeycloakUserAsync(keycloakUserId);
 
                 throw;
+            }
+        }
+
+        private async Task RollbackKeycloakUserAsync(string? keycloakUserId)
+        {
+            if (string.IsNullOrEmpty(keycloakUserId))
+                return;
+
+            try
+            {
+                await _keycloakAuthService.DeleteUserAsync(keycloakUserId);
+                _logger.LogInformation("Compensation: deleted Keycloak user {UserId}", keycloakUserId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to delete Keycloak user {UserId} after rollback. Schedule manual/automatic cleanup.", keycloakUserId);
             }
         }
     }
