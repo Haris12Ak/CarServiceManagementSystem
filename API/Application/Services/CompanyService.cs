@@ -42,6 +42,8 @@ namespace Application.Services
             {
                 keycloakUserId = await _keycloakAuthService.CreateUserAsync(user, false);
 
+                await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "owner");
+
                 var comapny = new Companies
                 {
                     Name = registration.CompanyName,

@@ -10,5 +10,6 @@ namespace Application.Interfaces
         Task AuthenticateAdminAsync();
         Task<string> CreateUserAsync(User user, bool forcePasswordUpdated);
         Task DeleteUserAsync(string keycloakUserId);
+        Task AssignRoleAsync(string keycloakUserId, string roleName);
     }
 }

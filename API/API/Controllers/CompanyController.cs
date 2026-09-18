@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -115,5 +115,35 @@ namespace Application.Services
 
             await client.DeleteAsync($"{baseUrl}/admin/realms/{realm}/users/{keycloakUserId}");
         }
+
+        public async Task AssignRoleAsync(string keycloakUserId, string roleName)
+        {
+            var realm = _configuration["Keycloak:Realm"];
+            var baseUrl = _configuration["Keycloak:BaseUrl"];
+
+            var roleUrl = $"{baseUrl}/admin/realms/{realm}/roles/{roleName}";
+            var roleResp = await _httpClient.GetAsync(roleUrl);
+            roleResp.EnsureSuccessStatusCode();
+
+            var roleJson = await roleResp.Content.ReadAsStringAsync();
+            var roleObj = JsonSerializer.Deserialize<JsonElement>(roleJson);
+
+            var roleRep = new[]
+            {
+                new
+                {
+                    id = roleObj.GetProperty("id").GetString(),
+                    name = roleObj.GetProperty("name").GetString()
+                }
+            };
+
+            var assignUrl = $"{baseUrl}/admin/realms/{realm}/users/{keycloakUserId}/role-mappings/realm";
+
+            var json = JsonSerializer.Serialize(roleRep);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var assignResp = await _httpClient.PostAsync(assignUrl, content);
+            assignResp.EnsureSuccessStatusCode();
+        }
     }
 }
