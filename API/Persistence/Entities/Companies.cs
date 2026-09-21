@@ -22,7 +22,7 @@ namespace Persistence.Entities
 
         public CompanySettings Settings { get; set; }
         public ICollection<Employee> Employees { get; set; } = new List<Employee>();
-        public ICollection<Customer> Customers { get; set; } = new List<Customer>();
+        public ICollection<Client> Clients { get; set; } = new List<Client>();
         public ICollection<Vehicles> Vehicles { get; set; } = new List<Vehicles>();
         public ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
         public ICollection<Services> Services { get; set; } = new List<Services>();

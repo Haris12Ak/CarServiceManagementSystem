@@ -27,9 +27,9 @@ namespace Persistence.Entities
         public Companies Companies { get; set; }
         public int CompanyId { get; set; }
 
-        [ForeignKey(nameof(CustomerId))]
-        public Customer Customer { get; set; }
-        public int CustomerId { get; set; }
+        [ForeignKey(nameof(ClientId))]
+        public Client Client { get; set; }
+        public int ClientId { get; set; }
 
         public ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
         public ICollection<WorkOrders> WorkOrders { get; set; } = new List<WorkOrders>();

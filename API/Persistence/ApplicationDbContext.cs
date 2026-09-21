@@ -23,7 +23,7 @@ namespace Persistence
         public DbSet<Appointments> Appointments { get; set; }
         public DbSet<Companies> Companies { get; set; }
         public DbSet<CompanySettings> CompanySettings { get; set; }
-        public DbSet<Customer> Customer { get; set; }
+        public DbSet<Client> Client { get; set; }
         public DbSet<Employee> Employee { get; set; }
         public DbSet<InspectionItems> InspectionItems { get; set; }
         public DbSet<Inventory> Inventory { get; set; }

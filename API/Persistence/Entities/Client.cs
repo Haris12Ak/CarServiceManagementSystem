@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Persistence.Entities
 {
-    public class Customer : PersonBase
+    public class Client : PersonBase
     {
         public string Address { get; set; }
         public string City { get; set; }
