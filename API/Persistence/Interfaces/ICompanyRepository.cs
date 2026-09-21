@@ -7,6 +7,7 @@ namespace Persistence.Interfaces
 {
     public interface ICompanyRepository
     {
+        Task<Companies> FindByIdAsync(int companyId);
         Task CrateCompanyWithAdminAsync(Companies company, Employee adminEmployee);
     }
 }

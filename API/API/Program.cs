@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddPersistenceRepositories(builder.Configuration);

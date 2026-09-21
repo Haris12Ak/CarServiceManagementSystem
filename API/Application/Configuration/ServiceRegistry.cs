@@ -17,6 +17,7 @@ namespace Application.Configuration
 
             services.AddScoped<IKeycloakAuthService, KeycloakAuthService>();
             services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ICurrentSystemUserService, CurrentSystemUserService>();
 
             return services;
         }

@@ -16,6 +16,7 @@ namespace Persistence.Configuration
                 throw new ArgumentNullException(nameof(services));
 
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
             return services;
         }

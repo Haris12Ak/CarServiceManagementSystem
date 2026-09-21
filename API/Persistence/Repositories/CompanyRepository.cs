@@ -1,4 +1,5 @@
 ﻿using Domain.Defaults;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Entities;
 using Persistence.Interfaces;
 using System;
@@ -59,6 +60,17 @@ namespace Persistence.Repositories
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+
+        public async Task<Companies> FindByIdAsync(int companyId)
+        {
+            var company = await _context.Companies
+                .FindAsync(companyId);
+
+            if (company == null)
+                return null;
+
+            return company;
         }
     }
 }
