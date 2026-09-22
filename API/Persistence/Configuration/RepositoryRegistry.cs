@@ -17,6 +17,7 @@ namespace Persistence.Configuration
 
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>();
 
             return services;
         }

@@ -61,5 +61,27 @@ namespace API.Controllers
                 });
             }
         }
+
+        [Authorize(Roles = "owner")]
+        [HttpPost("AddClientToCompany/{companyId}")]
+        public async Task<IActionResult> AddClientToCompany(int companyId, ClientInsertRequest request)
+        {
+            try
+            {
+                var currentUser = _currentSystemUserService.KeycloakUserId;
+
+                await _companyService.AddClientToCompanyAsync(companyId, currentUser, request);
+
+                return Ok(new { Message = $"Client {request.FirstName} {request.LastName} has been successfully added for the company {{companyID}} {companyId}." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    Message = "Adding new employee failed.",
+                    Error = ex.Message
+                });
+            }
+        }
     }
 }

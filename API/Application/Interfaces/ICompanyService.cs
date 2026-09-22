@@ -9,5 +9,6 @@ namespace Application.Interfaces
     {
         Task RegisterCompanyAsync(CompanyRegistration registration);
         Task AddEmployeeToCompanyAsync(int companyId, string keycloakUserId, EmployeeInsertRequest request);
+        Task AddClientToCompanyAsync(int companyId, string keycloakUserId, ClientInsertRequest request);
     }
 }

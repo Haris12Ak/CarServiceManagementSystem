@@ -16,6 +16,6 @@ namespace Application.Requests
         public string CompanyTaxNumber { get; set; }
         public byte[]? CompanyLogo { get; set; }
 
-        public EmployeeCreateRequest AdminEmployee { get; set; }
+        public AdminEmployeeRequest AdminEmployee { get; set; }
     }
 }
