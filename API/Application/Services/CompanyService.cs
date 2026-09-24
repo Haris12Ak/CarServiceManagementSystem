@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Authorization;
+using Application.Interfaces;
 using Application.Requests;
 using Azure.Core;
 using Domain.Helpers;
@@ -19,18 +20,22 @@ namespace Application.Services
         private readonly ICompanyRepository _companyRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IClientRepository _clientRepository;
+        private readonly ICompanyAuthorizationService _companyAuthorizationService;
         private readonly ILogger<CompanyService> _logger;
 
-        public CompanyService(IKeycloakAuthService keycloakAuthService,
+        public CompanyService(
+            IKeycloakAuthService keycloakAuthService,
             ICompanyRepository companyRepository,
             IEmployeeRepository employeeRepository,
             IClientRepository clientRepository,
+            ICompanyAuthorizationService companyAuthorizationService,
             ILogger<CompanyService> logger)
         {
             _keycloakAuthService = keycloakAuthService;
             _companyRepository = companyRepository;
             _employeeRepository = employeeRepository;
             _clientRepository = clientRepository;
+            _companyAuthorizationService = companyAuthorizationService;
             _logger = logger;
         }
 
@@ -90,9 +95,14 @@ namespace Application.Services
             }
         }
 
-        public async Task AddEmployeeToCompanyAsync(int companyId, string keycloakUserId, EmployeeInsertRequest request)
+        public async Task AddEmployeeToCompanyAsync(string keycloakUserId, EmployeeInsertRequest request)
         {
-            var owner = await GetOwnerAsync(companyId, keycloakUserId);
+            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+
+            var isAuthorized = await _companyAuthorizationService.IsUserInCompanyAsync(keycloakUserId, companyId);
+
+            if (!isAuthorized)
+                throw new Exception("User does not belong to this company.");
 
             var user = UserMapper(request.FirstName, request.LastName, request.Email, null, null);
 
@@ -116,7 +126,7 @@ namespace Application.Services
                     IsActive = true,
                     CreatedAt = DateTime.Now,
                     Position = request.Position,
-                    CompanyId = owner.CompanyId
+                    CompanyId = companyId
                 };
 
                 await _employeeRepository.CreateEmployeeAsync(newEmployee);
@@ -131,9 +141,14 @@ namespace Application.Services
             }
         }
 
-        public async Task AddClientToCompanyAsync(int companyId, string keycloakUserId, ClientInsertRequest request)
+        public async Task AddClientToCompanyAsync(string keycloakUserId, ClientInsertRequest request)
         {
-            var owner = await GetOwnerAsync(companyId, keycloakUserId);
+            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+
+            var isAuthorized = await _companyAuthorizationService.IsUserInCompanyAsync(keycloakUserId, companyId);
+
+            if (!isAuthorized)
+                throw new Exception("User does not belong to this company.");
 
             var user = UserMapper(request.FirstName, request.LastName, request.Email, null, null);
 
@@ -159,7 +174,7 @@ namespace Application.Services
                     Address = request.Address,
                     City = request.City,
                     Notes = request?.Notes,
-                    CompanyId = owner.CompanyId
+                    CompanyId = companyId
                 };
 
                 await _clientRepository.CreateClientAsync(newClient);
@@ -188,17 +203,6 @@ namespace Application.Services
             {
                 _logger.LogError(ex, "Failed to delete Keycloak user {UserId} after rollback. Schedule manual/automatic cleanup.", keycloakUserId);
             }
-        }
-
-        private async Task<Employee> GetOwnerAsync(int companyId, string keycloakUserId)
-        {
-            var owner = await _employeeRepository.FindEmployeeByCompanyIdAsync(companyId, keycloakUserId)
-                ?? throw new Exception($"Owner with ID {keycloakUserId} not found.");
-
-            if (owner.CompanyId != companyId)
-                throw new Exception($"Owner with ID {keycloakUserId} does not belong to company with ID {companyId}.");
-
-            return owner;
         }
 
         private User UserMapper(string firstName, string lastName, string email, string? username, string? password)

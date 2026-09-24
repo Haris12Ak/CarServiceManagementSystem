@@ -72,5 +72,23 @@ namespace Persistence.Repositories
 
             return company;
         }
+
+        public async Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId)
+        {
+            var isEmployee = await _context.Employee
+                .AnyAsync(e =>
+                e.KeycloakUserId == keycloakUserId &&
+                e.CompanyId == companyId &&
+                e.IsActive == true);
+
+            if (isEmployee)
+                return true;
+
+            return await _context.Client
+                .AnyAsync(c =>
+                c.KeycloakUserId == keycloakUserId &&
+                c.CompanyId == companyId &&
+                c.IsActive == true);
+        }
     }
 }

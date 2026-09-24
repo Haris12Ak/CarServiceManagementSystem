@@ -1,11 +1,10 @@
-﻿using Application.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 
-namespace Application.Services
+namespace Application.Authorization
 {
     public class CurrentSystemUserService : ICurrentSystemUserService
     {

@@ -1,5 +1,4 @@
-﻿using Application.Interfaces;
-using Application.Requests;
+﻿using Application.Requests;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
-namespace Application.Services
+namespace Application.Authorization
 {
     public class KeycloakAuthService : IKeycloakAuthService
     {

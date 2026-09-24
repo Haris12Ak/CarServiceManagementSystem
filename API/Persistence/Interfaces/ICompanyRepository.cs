@@ -9,5 +9,6 @@ namespace Persistence.Interfaces
     {
         Task<Companies> FindByIdAsync(int companyId);
         Task CrateCompanyWithAdminAsync(Companies company, Employee adminEmployee);
+        Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId);
     }
 }

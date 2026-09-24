@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260924153927_changing_the_name_of_the_Services_to_ServiceType_table")]
-    partial class changing_the_name_of_the_Services_to_ServiceType_table
+    [Migration("20260924175847_changing_the_name_of_the_table_Services_to_ServiceType")]
+    partial class changing_the_name_of_the_table_Services_to_ServiceType
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -526,7 +526,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Services");
+                    b.ToTable("ServiceType");
                 });
 
             modelBuilder.Entity("Persistence.Entities.SpareParts", b =>

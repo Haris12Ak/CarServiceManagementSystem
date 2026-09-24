@@ -523,7 +523,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Services");
+                    b.ToTable("ServiceType");
                 });
 
             modelBuilder.Entity("Persistence.Entities.SpareParts", b =>

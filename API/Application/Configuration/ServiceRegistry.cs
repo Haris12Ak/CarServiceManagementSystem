@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Authorization;
+using Application.Interfaces;
 using Application.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ namespace Application.Configuration
             services.AddScoped<IKeycloakAuthService, KeycloakAuthService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ICurrentSystemUserService, CurrentSystemUserService>();
+            services.AddScoped<ICompanyAuthorizationService, CompanyAuthorizationService>();
 
             return services;
         }

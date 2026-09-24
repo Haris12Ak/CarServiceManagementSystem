@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Authorization;
+using Application.Interfaces;
 using Application.Requests;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,8 @@ namespace API.Controllers
         private readonly ICompanyService _companyService;
         private readonly ICurrentSystemUserService _currentSystemUserService;
 
-        public CompanyController(ICompanyService companyService,
+        public CompanyController(
+            ICompanyService companyService,
             ICurrentSystemUserService currentSystemUserService)
         {
             _companyService = companyService;
@@ -41,16 +43,16 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "owner")]
-        [HttpPost("AddEmployeeToCompany/{companyId}")]
-        public async Task<IActionResult> AddEmployeeToCompany(int companyId, EmployeeInsertRequest request)
+        [HttpPost("AddEmployeeToCompany")]
+        public async Task<IActionResult> AddEmployeeToCompany(EmployeeInsertRequest request)
         {
             try
             {
                 var currentUser = _currentSystemUserService.KeycloakUserId;
 
-                await _companyService.AddEmployeeToCompanyAsync(companyId, currentUser, request);
+                await _companyService.AddEmployeeToCompanyAsync(currentUser, request);
 
-                return Ok(new { Message = $"Employee {request.FirstName} {request.LastName} has been successfully added for the company {{companyID}} {companyId}." });
+                return Ok(new { Message = $"Employee {request.FirstName} {request.LastName} has been successfully added." });
             }
             catch (Exception ex)
             {
@@ -63,16 +65,16 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "owner")]
-        [HttpPost("AddClientToCompany/{companyId}")]
-        public async Task<IActionResult> AddClientToCompany(int companyId, ClientInsertRequest request)
+        [HttpPost("AddClientToCompany")]
+        public async Task<IActionResult> AddClientToCompany(ClientInsertRequest request)
         {
             try
             {
                 var currentUser = _currentSystemUserService.KeycloakUserId;
 
-                await _companyService.AddClientToCompanyAsync(companyId, currentUser, request);
+                await _companyService.AddClientToCompanyAsync(currentUser, request);
 
-                return Ok(new { Message = $"Client {request.FirstName} {request.LastName} has been successfully added for the company {{companyID}} {companyId}." });
+                return Ok(new { Message = $"Client {request.FirstName} {request.LastName} has been successfully added." });
             }
             catch (Exception ex)
             {
