@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Persistence.Entities
 {
-    public class Services
+    public class ServiceType
     {
         [Key]
         public int Id { get; set; }

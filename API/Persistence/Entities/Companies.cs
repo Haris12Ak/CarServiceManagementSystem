@@ -25,7 +25,7 @@ namespace Persistence.Entities
         public ICollection<Client> Clients { get; set; } = new List<Client>();
         public ICollection<Vehicles> Vehicles { get; set; } = new List<Vehicles>();
         public ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
-        public ICollection<Services> Services { get; set; } = new List<Services>();
+        public ICollection<ServiceType> ServiceType { get; set; } = new List<ServiceType>();
         public ICollection<WorkOrders> WorkOrders { get; set; } = new List<WorkOrders>();
         public ICollection<Suppliers> Suppliers { get; set; } = new List<Suppliers>();
         public ICollection<SpareParts> SpareParts { get; set; } = new List<SpareParts>();

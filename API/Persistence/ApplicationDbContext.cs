@@ -30,7 +30,7 @@ namespace Persistence
         public DbSet<InventoryTransactions> InventoryTransactions { get; set; }
         public DbSet<InvoiceItems> InvoiceItems { get; set; }
         public DbSet<Invoices> Invoices { get; set; }
-        public DbSet<Services> Services { get; set; }
+        public DbSet<ServiceType> Services { get; set; }
         public DbSet<SpareParts> SpareParts { get; set; }
         public DbSet<Suppliers> Suppliers { get; set; }
         public DbSet<VehicleInspections> VehicleInspections { get; set; }

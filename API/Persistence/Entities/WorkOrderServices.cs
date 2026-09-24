@@ -20,8 +20,8 @@ namespace Persistence.Entities
         public WorkOrders WorkOrders { get; set; }
         public int WorkOrderId { get; set; }
 
-        [ForeignKey(nameof(ServiceId))]
-        public Services Services { get; set; }
-        public int ServiceId { get; set; }
+        [ForeignKey(nameof(ServiceTypeId))]
+        public ServiceType ServiceType { get; set; }
+        public int ServiceTypeId { get; set; }
     }
 }
