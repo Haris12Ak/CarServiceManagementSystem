@@ -99,11 +99,6 @@ namespace Application.Services
         {
             var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
 
-            var isAuthorized = await _companyAuthorizationService.IsUserInCompanyAsync(keycloakUserId, companyId);
-
-            if (!isAuthorized)
-                throw new Exception("User does not belong to this company.");
-
             var user = UserMapper(request.FirstName, request.LastName, request.Email, null, null);
 
             await _keycloakAuthService.AuthenticateAdminAsync();
@@ -144,11 +139,6 @@ namespace Application.Services
         public async Task AddClientToCompanyAsync(string keycloakUserId, ClientInsertRequest request)
         {
             var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
-
-            var isAuthorized = await _companyAuthorizationService.IsUserInCompanyAsync(keycloakUserId, companyId);
-
-            if (!isAuthorized)
-                throw new Exception("User does not belong to this company.");
 
             var user = UserMapper(request.FirstName, request.LastName, request.Email, null, null);
 

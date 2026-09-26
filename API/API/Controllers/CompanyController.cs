@@ -80,7 +80,7 @@ namespace API.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Adding new employee failed.",
+                    Message = "Adding new client failed.",
                     Error = ex.Message
                 });
             }
