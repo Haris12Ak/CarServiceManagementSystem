@@ -20,6 +20,7 @@ namespace Application.Configuration
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ICurrentSystemUserService, CurrentSystemUserService>();
             services.AddScoped<ICompanyAuthorizationService, CompanyAuthorizationService>();
+            services.AddScoped<IServiceTypeService, ServiceTypeService>();
 
             return services;
         }
