@@ -1,11 +1,13 @@
 ﻿using Application.Authorization;
 using Application.Interfaces;
+using Application.Mappers;
 using Application.Requests;
 using Azure.Core;
 using Domain.Helpers;
+using Domain.Models;
 using Microsoft.Extensions.Logging;
-using Persistence.Entities;
 using Persistence.Interfaces;
+using Persistence.Mappers;
 using Persistence.Repositories;
 using System;
 using System.Collections.Generic;
@@ -43,7 +45,7 @@ namespace Application.Services
         {
             await _keycloakAuthService.AuthenticateAdminAsync();
 
-            var user = UserMapper(
+            var user = UserMapper.MapToUser(
                 registration.AdminEmployee.FirstName,
                 registration.AdminEmployee.LastName,
                 registration.AdminEmployee.Email,
@@ -58,7 +60,7 @@ namespace Application.Services
 
                 await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "owner");
 
-                var comapny = new Companies
+                var company = new Companies
                 {
                     Name = registration.CompanyName,
                     Email = registration.CompanyEmail,
@@ -83,7 +85,11 @@ namespace Application.Services
                     CreatedAt = DateTime.Now,
                 };
 
-                await _companyRepository.CrateCompanyWithAdminAsync(comapny, adminEmployee);
+                var entityCompany = company.ToEntity();
+
+                var entityEmployee = adminEmployee.ToEntity();
+
+                await _companyRepository.CrateCompanyWithAdminAsync(entityCompany, entityEmployee);
             }
             catch (Exception ex)
             {
@@ -99,7 +105,7 @@ namespace Application.Services
         {
             var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
 
-            var user = UserMapper(request.FirstName, request.LastName, request.Email, null, null);
+            var user = UserMapper.MapToUser(request.FirstName, request.LastName, request.Email, null, null);
 
             await _keycloakAuthService.AuthenticateAdminAsync();
 
@@ -124,7 +130,9 @@ namespace Application.Services
                     CompanyId = companyId
                 };
 
-                await _employeeRepository.CreateEmployeeAsync(newEmployee);
+                var entity = newEmployee.ToEntity();
+
+                await _employeeRepository.CreateEmployeeAsync(entity);
             }
             catch (Exception ex)
             {
@@ -140,7 +148,7 @@ namespace Application.Services
         {
             var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
 
-            var user = UserMapper(request.FirstName, request.LastName, request.Email, null, null);
+            var user = UserMapper.MapToUser(request.FirstName, request.LastName, request.Email, null, null);
 
             await _keycloakAuthService.AuthenticateAdminAsync();
 
@@ -167,7 +175,9 @@ namespace Application.Services
                     CompanyId = companyId
                 };
 
-                await _clientRepository.CreateClientAsync(newClient);
+                var entity = newClient.ToEntity();
+
+                await _clientRepository.CreateClientAsync(entity);
             }
             catch (Exception ex)
             {
@@ -193,26 +203,6 @@ namespace Application.Services
             {
                 _logger.LogError(ex, "Failed to delete Keycloak user {UserId} after rollback. Schedule manual/automatic cleanup.", keycloakUserId);
             }
-        }
-
-        private User UserMapper(string firstName, string lastName, string email, string? username, string? password)
-        {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-            {
-                username = $"{firstName.ToLower()}_{lastName.ToLower()}";
-                password = PasswordGenerator.GeneratePassword();
-            }
-
-            var user = new User
-            {
-                Username = username,
-                Email = email,
-                FirstName = firstName,
-                LastName = lastName,
-                Password = password
-            };
-
-            return user;
         }
     }
 }

@@ -33,7 +33,6 @@ namespace Persistence.Mappers
         {
             return new EntityServiceType
             {
-                Id = domain.Id,
                 CompanyId = domain.CompanyId,
                 Name = domain.Name,
                 Description = domain.Description,
@@ -41,7 +40,6 @@ namespace Persistence.Mappers
                 EstimatedDuration = domain.EstimatedDuration,
                 IsActive = domain.IsActive,
                 CreatedAt = domain.CreatedAt,
-                UpdatedAt = domain.UpdatedAt
             };
         }
     }
