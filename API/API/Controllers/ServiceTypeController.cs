@@ -37,20 +37,13 @@ namespace API.Controllers
         }
 
         [HttpGet("GetById/{id}")]
-        public async Task<ActionResult<ServiceTypeDto>> GetById(int id)
+        public async Task<ServiceTypeDto> GetById(int id)
         {
             var currentUser = _currentSystemUserService.KeycloakUserId;
 
-            try
-            {
-                var serviceTypes = await _serviceTypeService.GetByIdAsync(id, currentUser);
-                return serviceTypes.ToDto();
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            var serviceTypes = await _serviceTypeService.GetByIdAsync(id, currentUser);
 
+            return serviceTypes.ToDto();
         }
     }
 }

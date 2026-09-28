@@ -1,4 +1,5 @@
-﻿using Persistence.Interfaces;
+﻿using Application.Exceptions;
+using Persistence.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,7 +34,7 @@ namespace Application.Authorization
             if (clientCompanyId.HasValue)
                 return clientCompanyId.Value;
 
-            throw new Exception("User does not belong to any company.");
+            throw new NotFoundException("User does not belong to any company.");
         }
 
         public async Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId)

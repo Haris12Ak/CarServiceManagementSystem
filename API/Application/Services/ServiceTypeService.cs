@@ -1,4 +1,5 @@
 ﻿using Application.Authorization;
+using Application.Exceptions;
 using Application.Interfaces;
 using Domain.Models;
 using Persistence.Interfaces;
@@ -38,7 +39,7 @@ namespace Application.Services
             var serviceType = await _serviceTypeRepository.FindByIdAsync(id, companyId);
 
             if (serviceType == null)
-                throw new Exception($"Service type with id {id} not found.");
+                throw new NotFoundException($"Service type with id {id} not found.");
 
             return serviceType.ToDomain();
         }

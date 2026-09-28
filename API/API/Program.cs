@@ -1,4 +1,5 @@
 using API.Configuration;
+using API.Middleware;
 using Application.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -41,6 +42,8 @@ if (app.Environment.IsDevelopment())
         options.OAuthUsePkce();
     });
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
