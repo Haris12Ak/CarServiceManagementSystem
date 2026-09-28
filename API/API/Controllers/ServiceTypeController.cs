@@ -2,6 +2,7 @@
 using Application.DTOs;
 using Application.Interfaces;
 using Application.Mappers;
+using Application.Requests;
 using Application.Services;
 using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
@@ -36,12 +37,32 @@ namespace API.Controllers
             return serviceTypes.ToDto();
         }
 
-        [HttpGet("GetById/{id}")]
+        [HttpGet("{id}")]
         public async Task<ServiceTypeDto> GetById(int id)
         {
             var currentUser = _currentSystemUserService.KeycloakUserId;
 
             var serviceTypes = await _serviceTypeService.GetByIdAsync(id, currentUser);
+
+            return serviceTypes.ToDto();
+        }
+
+        [HttpPost]
+        public async Task<ServiceTypeDto> Add(ServiceTypeRequest request)
+        {
+            var currentUser = _currentSystemUserService.KeycloakUserId;
+
+            var serviceTypes = await _serviceTypeService.AddAsync(currentUser, request);
+
+            return serviceTypes.ToDto();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ServiceTypeDto> Update(int id, ServiceTypeRequest request)
+        {
+            var currentUser = _currentSystemUserService.KeycloakUserId;
+
+            var serviceTypes = await _serviceTypeService.UpdateAsync(id, currentUser, request);
 
             return serviceTypes.ToDto();
         }

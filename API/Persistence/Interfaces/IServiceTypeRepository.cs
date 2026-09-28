@@ -9,5 +9,7 @@ namespace Persistence.Interfaces
     {
         Task<List<ServiceType>> FindAllAsync(int companyId);
         Task<ServiceType> FindByIdAsync(int id, int companyId);
+        Task<ServiceType> CreateAsync(ServiceType serviceType);
+        Task<ServiceType> UpdateAsync(ServiceType serviceType);
     }
 }

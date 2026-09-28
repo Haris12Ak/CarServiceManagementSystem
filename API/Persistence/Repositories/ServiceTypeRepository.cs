@@ -17,6 +17,7 @@ namespace Persistence.Repositories
             _context = context;
         }
 
+
         public async Task<List<ServiceType>> FindAllAsync(int companyId)
         {
             return await _context.ServiceType.
@@ -35,6 +36,21 @@ namespace Persistence.Repositories
 
             if (serviceType == null)
                 return null;
+
+            return serviceType;
+        }
+
+        public async Task<ServiceType> CreateAsync(ServiceType serviceType)
+        {
+            await _context.AddAsync(serviceType);
+            await _context.SaveChangesAsync();
+
+            return serviceType;
+        }
+
+        public async Task<ServiceType> UpdateAsync(ServiceType serviceType)
+        {
+            await _context.SaveChangesAsync();
 
             return serviceType;
         }

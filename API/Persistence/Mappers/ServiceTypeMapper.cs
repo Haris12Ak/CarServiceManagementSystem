@@ -39,8 +39,23 @@ namespace Persistence.Mappers
                 Price = domain.Price,
                 EstimatedDuration = domain.EstimatedDuration,
                 IsActive = domain.IsActive,
-                CreatedAt = domain.CreatedAt,
+                CreatedAt = domain.CreatedAt
             };
+        }
+
+        public static void MapToExistingEntity(this DomainServiceType domain, EntityServiceType entity)
+        {
+            if (domain == null)
+                throw new ArgumentNullException(nameof(domain));
+
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            entity.Name = domain.Name;
+            entity.Description = domain.Description;
+            entity.Price = domain.Price;
+            entity.EstimatedDuration = domain.EstimatedDuration;
+            entity.UpdatedAt = DateTime.Now;
         }
     }
 }

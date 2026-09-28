@@ -60,36 +60,11 @@ namespace Application.Services
 
                 await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "owner");
 
-                var company = new Companies
-                {
-                    Name = registration.CompanyName,
-                    Email = registration.CompanyEmail,
-                    Phone = registration.CompanyPhone,
-                    Address = registration.CompanyAddress,
-                    City = registration.CompanyCity,
-                    TaxNumber = registration.CompanyTaxNumber,
-                    Logo = registration.CompanyLogo,
-                    IsActive = true,
-                    CreatedAt = DateTime.Now
-                };
+                var company = registration.ToDomain();
 
-                var adminEmployee = new Employee
-                {
-                    KeycloakUserId = keycloakUserId,
-                    FirstName = registration.AdminEmployee.FirstName,
-                    LastName = registration.AdminEmployee.LastName,
-                    Email = registration.AdminEmployee.Email,
-                    Phone = registration.AdminEmployee.Phone,
-                    Position = registration.AdminEmployee.Position,
-                    IsActive = true,
-                    CreatedAt = DateTime.Now,
-                };
+                var adminEmployee = registration.ToDomain(keycloakUserId);
 
-                var entityCompany = company.ToEntity();
-
-                var entityEmployee = adminEmployee.ToEntity();
-
-                await _companyRepository.CrateCompanyWithAdminAsync(entityCompany, entityEmployee);
+                await _companyRepository.CrateCompanyWithAdminAsync(company.ToEntity(), adminEmployee.ToEntity());
             }
             catch (Exception ex)
             {
@@ -117,22 +92,9 @@ namespace Application.Services
 
                 await _keycloakAuthService.AssignRoleAsync(employeeKeycloakId, "employee");
 
-                var newEmployee = new Employee
-                {
-                    KeycloakUserId = employeeKeycloakId,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    Email = request.Email,
-                    Phone = request.Phone,
-                    IsActive = true,
-                    CreatedAt = DateTime.Now,
-                    Position = request.Position,
-                    CompanyId = companyId
-                };
+                var employee = request.ToDomain(employeeKeycloakId, companyId);
 
-                var entity = newEmployee.ToEntity();
-
-                await _employeeRepository.CreateEmployeeAsync(entity);
+                await _employeeRepository.CreateEmployeeAsync(employee.ToEntity());
             }
             catch (Exception ex)
             {
@@ -160,24 +122,9 @@ namespace Application.Services
 
                 await _keycloakAuthService.AssignRoleAsync(clientKeycloakId, "client");
 
-                var newClient = new Client
-                {
-                    KeycloakUserId = clientKeycloakId,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    Email = request.Email,
-                    Phone = request.Phone,
-                    IsActive = true,
-                    CreatedAt = DateTime.Now,
-                    Address = request.Address,
-                    City = request.City,
-                    Notes = request?.Notes,
-                    CompanyId = companyId
-                };
+                var client = request.ToDomain(keycloakUserId, companyId);
 
-                var entity = newClient.ToEntity();
-
-                await _clientRepository.CreateClientAsync(entity);
+                await _clientRepository.CreateClientAsync(client.ToEntity());
             }
             catch (Exception ex)
             {
