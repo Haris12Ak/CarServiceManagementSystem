@@ -24,8 +24,14 @@ namespace Persistence.Mappers
                 Phone = entity.Phone,
                 IsActive = entity.IsActive,
                 CreatedAt = entity.CreatedAt,
-                UpdatedAt = entity.UpdatedAt
+                UpdatedAt = entity.UpdatedAt,
+                Position = entity.Position
             };
+        }
+
+        public static List<DomainEmployee> ToDomain(this IEnumerable<EntityEmployee> entitys)
+        {
+            return entitys.Select(entity => entity.ToDomain()).ToList();
         }
 
         public static EntityEmployee ToEntity(this DomainEmployee domain)

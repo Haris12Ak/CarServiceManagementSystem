@@ -21,6 +21,8 @@ namespace Application.Configuration
             services.AddScoped<ICurrentSystemUserService, CurrentSystemUserService>();
             services.AddScoped<ICompanyAuthorizationService, CompanyAuthorizationService>();
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
+            services.AddScoped<IClientService, ClientService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
 
             return services;
         }

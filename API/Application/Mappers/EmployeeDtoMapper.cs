@@ -1,4 +1,6 @@
-﻿using Application.Requests;
+﻿using Application.DTOs;
+using Application.Requests;
+using Azure.Core;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,28 @@ namespace Application.Mappers
 {
     public static class EmployeeDtoMapper
     {
+        public static EmployeeDto ToDto(this Employee domain)
+        {
+            return new EmployeeDto
+            {
+                Id = domain.Id,
+                CompanyId = domain.CompanyId,
+                FirstName = domain.FirstName,
+                LastName = domain.LastName,
+                Email = domain.Email,
+                Phone = domain.Phone,
+                IsActive = domain.IsActive,
+                CreatedAt = domain.CreatedAt,
+                UpdatedAt = domain.UpdatedAt,
+                Position = domain.Position
+            };
+        }
+
+        public static List<EmployeeDto> ToDto(this IEnumerable<Employee> domains)
+        {
+            return domains.Select(domain => domain.ToDto()).ToList();
+        }
+
         public static Employee ToDomain(
             this CompanyRegistration request,
             string keycloakUserId)

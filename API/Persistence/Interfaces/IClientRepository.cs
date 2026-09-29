@@ -8,6 +8,5 @@ namespace Persistence.Interfaces
     public interface IClientRepository : IRepository<Client>
     {
         Task<int?> GetCompanyId(string keycloakUserId);
-        Task<Client> FindClientByCompanyIdAsync(int companyId, string keycloakUserId);
     }
 }

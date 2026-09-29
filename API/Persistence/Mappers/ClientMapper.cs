@@ -31,6 +31,11 @@ namespace Persistence.Mappers
             };
         }
 
+        public static List<DomainClient> ToDomain(this IEnumerable<EntityClient> entities)
+        {
+            return entities.Select(entity => entity.ToDomain()).ToList();
+        }
+
         public static EntityClient ToEntity(this DomainClient domain)
         {
             if (domain == null)
