@@ -11,11 +11,11 @@ namespace Application.Mappers
 {
     public static class ClientDtoMapper
     {
-        public static Client ToDomain(this ClientInsertRequest request, string keylcoakUserId, int companyId)
+        public static Client ToDomain(this ClientInsertRequest request, string keycloakUserId, int companyId)
         {
             return new Client
             {
-                KeycloakUserId = keylcoakUserId,
+                KeycloakUserId = keycloakUserId,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Email = request.Email,

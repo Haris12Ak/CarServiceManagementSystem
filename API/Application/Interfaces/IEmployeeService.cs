@@ -7,7 +7,7 @@ namespace Application.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<List<Employee>> GetAllEmployeeAsync(string keycloakUserId);
-        Task<Employee> GetEmployeeByIdAsync(int id, string keycloakUserId);
+        Task<List<Employee>> GetAllEmployeeAsync();
+        Task<Employee> GetEmployeeByIdAsync(int id);
     }
 }

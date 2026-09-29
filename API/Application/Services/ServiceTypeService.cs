@@ -16,28 +16,31 @@ namespace Application.Services
     {
         private readonly IServiceTypeRepository _serviceTypeRepository;
         private readonly ICompanyAuthorizationService _companyAuthorizationService;
+        private readonly ICurrentSystemUserService _currentSystemUserService;
 
         public ServiceTypeService(
             IServiceTypeRepository serviceTypeRepository,
-            ICompanyAuthorizationService companyAuthorizationService)
+            ICompanyAuthorizationService companyAuthorizationService,
+            ICurrentSystemUserService currentSystemUserService)
         {
             _serviceTypeRepository = serviceTypeRepository;
             _companyAuthorizationService = companyAuthorizationService;
+            _currentSystemUserService = currentSystemUserService;
         }
 
 
-        public async Task<List<ServiceType>> GetAllServiceTypeAsync(string keycloakUserId)
+        public async Task<List<ServiceType>> GetAllServiceTypeAsync()
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var serviceTypes = await _serviceTypeRepository.GetAllAsync(companyId);
 
             return serviceTypes.ToDomain();
         }
 
-        public async Task<ServiceType> GetServiceTypeByIdAsync(int id, string keycloakUserId)
+        public async Task<ServiceType> GetServiceTypeByIdAsync(int id)
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var serviceType = await _serviceTypeRepository.FindByIdAsync(id, companyId);
 
@@ -47,9 +50,9 @@ namespace Application.Services
             return serviceType.ToDomain();
         }
 
-        public async Task<ServiceType> AddServiceTypeAsync(string keycloakUserId, ServiceTypeRequest request)
+        public async Task<ServiceType> AddServiceTypeAsync(ServiceTypeRequest request)
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var serviceType = request.ToDomain(companyId);
 
@@ -58,9 +61,9 @@ namespace Application.Services
             return entity.ToDomain();
         }
 
-        public async Task<ServiceType> UpdateServiceTypeAsync(int id, string keycloakUserId, ServiceTypeRequest request)
+        public async Task<ServiceType> UpdateServiceTypeAsync(int id, ServiceTypeRequest request)
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var entity = await _serviceTypeRepository.FindByIdAsync(id, companyId);
 

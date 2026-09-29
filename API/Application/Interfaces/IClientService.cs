@@ -7,7 +7,7 @@ namespace Application.Interfaces
 {
     public interface IClientService
     {
-        Task<List<Client>> GetAllClientAsync(string keycloakUserId);
-        Task<Client> GetClientByIdAsync(int id, string keycloakUserId);
+        Task<List<Client>> GetAllClientAsync();
+        Task<Client> GetClientByIdAsync(int id);
     }
 }

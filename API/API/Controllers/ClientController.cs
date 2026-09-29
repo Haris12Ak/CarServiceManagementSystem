@@ -16,24 +16,20 @@ namespace API.Controllers
     public class ClientController : ControllerBase
     {
         private readonly IClientService _clientService;
-        private readonly ICurrentSystemUserService _currentSystemUserService;
         private readonly ICompanyService _companyService;
-        private string CurrentUserId => _currentSystemUserService.KeycloakUserId;
 
         public ClientController(
             IClientService clientService,
-            ICurrentSystemUserService currentSystemUserService,
             ICompanyService companyService)
         {
             _clientService = clientService;
-            _currentSystemUserService = currentSystemUserService;
             _companyService = companyService;
         }
 
         [HttpGet]
         public async Task<List<ClientDto>> GetAll()
         {
-            var clients = await _clientService.GetAllClientAsync(CurrentUserId);
+            var clients = await _clientService.GetAllClientAsync();
 
             return clients.ToDto();
         }
@@ -41,7 +37,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ClientDto> GetById(int id)
         {
-            var client = await _clientService.GetClientByIdAsync(id, CurrentUserId);
+            var client = await _clientService.GetClientByIdAsync(id);
 
             return client.ToDto();
         }
@@ -51,7 +47,7 @@ namespace API.Controllers
         {
             try
             {
-                await _companyService.AddClientToCompanyAsync(CurrentUserId, request);
+                await _companyService.AddClientToCompanyAsync(request);
 
                 return Ok(new { Message = $"Client {request.FirstName} {request.LastName} has been successfully added." });
             }

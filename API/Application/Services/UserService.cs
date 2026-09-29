@@ -12,26 +12,28 @@ namespace Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly ICompanyAuthorizationService _companyAuthorizationService;
+        private readonly ICurrentSystemUserService _currentSystemUserService;
         private readonly ICompanyRepository _companyRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IClientRepository _clientRepository;
 
         public UserService(
-            ICompanyAuthorizationService companyAuthorizationService,
+            ICurrentSystemUserService currentSystemUserService,
             ICompanyRepository companyRepository,
             IEmployeeRepository employeeRepository,
             IClientRepository clientRepository)
         {
-            _companyAuthorizationService = companyAuthorizationService;
+            _currentSystemUserService = currentSystemUserService;
             _companyRepository = companyRepository;
             _employeeRepository = employeeRepository;
             _clientRepository = clientRepository;
         }
 
-        public async Task<(Employee? emoloyee, Client? client, Companies? company)> GetUserInfoAsync(string keycloakUserId)
+        public async Task<(Employee? emoloyee, Client? client, Companies? company)> GetUserInfoAsync()
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+
+            var keycloakUserId = _currentSystemUserService.KeycloakUserId;
 
             var company = await _companyRepository.FindByIdAsync(companyId);
 

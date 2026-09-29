@@ -14,19 +14,16 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ICurrentSystemUserService _currentSystemUserService;
-        private string CurrentUserId => _currentSystemUserService.KeycloakUserId;
 
-        public UserController(IUserService userService, ICurrentSystemUserService currentSystemUserService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _currentSystemUserService = currentSystemUserService;
         }
 
         [HttpGet("Info")]
         public async Task<UserDto> GetUserInfo()
         {
-            var userInfo = await _userService.GetUserInfoAsync(CurrentUserId);
+            var userInfo = await _userService.GetUserInfoAsync();
 
             return userInfo.ToDto();
         }

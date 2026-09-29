@@ -8,7 +8,7 @@ namespace Application.Interfaces
     public interface ICompanyService
     {
         Task RegisterCompanyAsync(CompanyRegistration registration);
-        Task AddEmployeeToCompanyAsync(string keycloakUserId, EmployeeInsertRequest request);
-        Task AddClientToCompanyAsync(string keycloakUserId, ClientInsertRequest request);
+        Task AddEmployeeToCompanyAsync(EmployeeInsertRequest request);
+        Task AddClientToCompanyAsync(ClientInsertRequest request);
     }
 }

@@ -22,7 +22,7 @@ namespace Application.Services
         private readonly ICompanyRepository _companyRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IClientRepository _clientRepository;
-        private readonly ICompanyAuthorizationService _companyAuthorizationService;
+        private readonly ICurrentSystemUserService _currentSystemUserService;
         private readonly ILogger<CompanyService> _logger;
 
         public CompanyService(
@@ -30,14 +30,14 @@ namespace Application.Services
             ICompanyRepository companyRepository,
             IEmployeeRepository employeeRepository,
             IClientRepository clientRepository,
-            ICompanyAuthorizationService companyAuthorizationService,
+            ICurrentSystemUserService currentSystemUserService,
             ILogger<CompanyService> logger)
         {
             _keycloakAuthService = keycloakAuthService;
             _companyRepository = companyRepository;
             _employeeRepository = employeeRepository;
             _clientRepository = clientRepository;
-            _companyAuthorizationService = companyAuthorizationService;
+            _currentSystemUserService = currentSystemUserService;
             _logger = logger;
         }
 
@@ -76,51 +76,51 @@ namespace Application.Services
             }
         }
 
-        public async Task AddEmployeeToCompanyAsync(string keycloakUserId, EmployeeInsertRequest request)
+        public async Task AddEmployeeToCompanyAsync(EmployeeInsertRequest request)
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var user = UserMapper.MapToUser(request.FirstName, request.LastName, request.Email, null, null);
 
             await _keycloakAuthService.AuthenticateAdminAsync();
 
-            string employeeKeycloakId = null;
+            string keycloakUserId = null;
 
             try
             {
-                employeeKeycloakId = await _keycloakAuthService.CreateUserAsync(user, true);
+                keycloakUserId = await _keycloakAuthService.CreateUserAsync(user, true);
 
-                await _keycloakAuthService.AssignRoleAsync(employeeKeycloakId, "employee");
+                await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "employee");
 
-                var employee = request.ToDomain(employeeKeycloakId, companyId);
+                var employee = request.ToDomain(keycloakUserId, companyId);
 
                 await _employeeRepository.SaveAsync(employee.ToEntity());
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Adding new employee failed. Attempting to remove Keycloak user {UserId}", employeeKeycloakId);
+                _logger.LogError(ex, "Adding new employee failed. Attempting to remove Keycloak user {UserId}", keycloakUserId);
 
-                await RollbackUserAsync(employeeKeycloakId);
+                await RollbackUserAsync(keycloakUserId);
 
                 throw;
             }
         }
 
-        public async Task AddClientToCompanyAsync(string keycloakUserId, ClientInsertRequest request)
+        public async Task AddClientToCompanyAsync(ClientInsertRequest request)
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var user = UserMapper.MapToUser(request.FirstName, request.LastName, request.Email, null, null);
 
             await _keycloakAuthService.AuthenticateAdminAsync();
 
-            string clientKeycloakId = null;
+            string keycloakUserId = null;
 
             try
             {
-                clientKeycloakId = await _keycloakAuthService.CreateUserAsync(user, true);
+                keycloakUserId = await _keycloakAuthService.CreateUserAsync(user, true);
 
-                await _keycloakAuthService.AssignRoleAsync(clientKeycloakId, "client");
+                await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "client");
 
                 var client = request.ToDomain(keycloakUserId, companyId);
 
@@ -128,9 +128,9 @@ namespace Application.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Adding new client failed. Attempting to remove Keycloak user {UserId}", clientKeycloakId);
+                _logger.LogError(ex, "Adding new client failed. Attempting to remove Keycloak user {UserId}", keycloakUserId);
 
-                await RollbackUserAsync(clientKeycloakId);
+                await RollbackUserAsync(keycloakUserId);
 
                 throw;
             }

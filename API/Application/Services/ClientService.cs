@@ -13,28 +13,28 @@ namespace Application.Services
     public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
-        private readonly ICompanyAuthorizationService _companyAuthorizationService;
+        private readonly ICurrentSystemUserService _currentSystemUserService;
 
         public ClientService(
             IClientRepository clientRepository,
-            ICompanyAuthorizationService companyAuthorizationService)
+            ICurrentSystemUserService currentSystemUserService)
         {
             _clientRepository = clientRepository;
-            _companyAuthorizationService = companyAuthorizationService;
+            _currentSystemUserService = currentSystemUserService;
         }
 
-        public async Task<List<Client>> GetAllClientAsync(string keycloakUserId)
+        public async Task<List<Client>> GetAllClientAsync()
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var clients = await _clientRepository.GetAllAsync(companyId);
 
             return clients.ToDomain();
         }
 
-        public async Task<Client> GetClientByIdAsync(int id, string keycloakUserId)
+        public async Task<Client> GetClientByIdAsync(int id)
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var client = await _clientRepository.FindByIdAsync(id, companyId);
 

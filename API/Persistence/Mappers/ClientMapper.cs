@@ -16,7 +16,6 @@ namespace Persistence.Mappers
             return new DomainClient
             {
                 Id = entity.Id,
-                KeycloakUserId = entity.KeycloakUserId,
                 CompanyId = entity.CompanyId,
                 FirstName = entity.FirstName,
                 LastName = entity.LastName,

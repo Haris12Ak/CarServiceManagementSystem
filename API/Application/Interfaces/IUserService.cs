@@ -7,6 +7,6 @@ namespace Application.Interfaces
 {
     public interface IUserService
     {
-        Task<(Employee? emoloyee, Client? client, Companies? company)> GetUserInfoAsync(string keycloakUserId);
+        Task<(Employee? emoloyee, Client? client, Companies? company)> GetUserInfoAsync();
     }
 }

@@ -13,26 +13,26 @@ namespace Application.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly ICompanyAuthorizationService _companyAuthorizationService;
+        private readonly ICurrentSystemUserService _currentSystemUserService;
 
-        public EmployeeService(IEmployeeRepository employeeRepository, ICompanyAuthorizationService companyAuthorizationService)
+        public EmployeeService(IEmployeeRepository employeeRepository, ICurrentSystemUserService currentSystemUserService)
         {
             _employeeRepository = employeeRepository;
-            _companyAuthorizationService = companyAuthorizationService;
+            _currentSystemUserService = currentSystemUserService;
         }
 
-        public async Task<List<Employee>> GetAllEmployeeAsync(string keycloakUserId)
+        public async Task<List<Employee>> GetAllEmployeeAsync()
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var employees = await _employeeRepository.GetAllAsync(companyId);
 
             return employees.ToDomain();
         }
 
-        public async Task<Employee> GetEmployeeByIdAsync(int id, string keycloakUserId)
+        public async Task<Employee> GetEmployeeByIdAsync(int id)
         {
-            var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
             var employee = await _employeeRepository.FindByIdAsync(id, companyId);
 

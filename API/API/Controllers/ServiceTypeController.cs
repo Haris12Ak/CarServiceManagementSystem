@@ -17,21 +17,16 @@ namespace API.Controllers
     public class ServiceTypeController : ControllerBase
     {
         private readonly IServiceTypeService _serviceTypeService;
-        private readonly ICurrentSystemUserService _currentSystemUserService;
-        private string CurrentUserId => _currentSystemUserService.KeycloakUserId;
 
-        public ServiceTypeController(
-            IServiceTypeService serviceTypeService,
-            ICurrentSystemUserService currentSystemUserService)
+        public ServiceTypeController(IServiceTypeService serviceTypeService)
         {
             _serviceTypeService = serviceTypeService;
-            _currentSystemUserService = currentSystemUserService;
         }
 
         [HttpGet]
         public async Task<List<ServiceTypeDto>> GetAll()
         {
-            var serviceTypes = await _serviceTypeService.GetAllServiceTypeAsync(CurrentUserId);
+            var serviceTypes = await _serviceTypeService.GetAllServiceTypeAsync();
 
             return serviceTypes.ToDto();
         }
@@ -39,7 +34,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ServiceTypeDto> GetById(int id)
         {
-            var serviceTypes = await _serviceTypeService.GetServiceTypeByIdAsync(id, CurrentUserId);
+            var serviceTypes = await _serviceTypeService.GetServiceTypeByIdAsync(id);
 
             return serviceTypes.ToDto();
         }
@@ -47,7 +42,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ServiceTypeDto> Add([FromBody] ServiceTypeRequest request)
         {
-            var serviceTypes = await _serviceTypeService.AddServiceTypeAsync(CurrentUserId, request);
+            var serviceTypes = await _serviceTypeService.AddServiceTypeAsync(request);
 
             return serviceTypes.ToDto();
         }
@@ -55,7 +50,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ServiceTypeDto> Update(int id, [FromBody] ServiceTypeRequest request)
         {
-            var serviceTypes = await _serviceTypeService.UpdateServiceTypeAsync(id, CurrentUserId, request);
+            var serviceTypes = await _serviceTypeService.UpdateServiceTypeAsync(id, request);
 
             return serviceTypes.ToDto();
         }
