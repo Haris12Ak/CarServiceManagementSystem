@@ -7,14 +7,9 @@ using System.Text;
 
 namespace Persistence.Repositories
 {
-    public class EmployeeRepository : IEmployeeRepository
+    public class EmployeeRepository : EfRepository<Employee>, IEmployeeRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public EmployeeRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        public EmployeeRepository(ApplicationDbContext context) : base(context) { }
 
         public async Task<int?> GetCompanyId(string keycloakUserId)
         {
@@ -36,14 +31,6 @@ namespace Persistence.Repositories
 
             if (employee == null)
                 return null;
-
-            return employee;
-        }
-
-        public async Task<Employee> CreateEmployeeAsync(Employee employee)
-        {
-            await _context.Employee.AddAsync(employee);
-            await _context.SaveChangesAsync();
 
             return employee;
         }

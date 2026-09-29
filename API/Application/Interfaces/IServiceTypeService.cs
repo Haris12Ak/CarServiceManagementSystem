@@ -8,9 +8,9 @@ namespace Application.Interfaces
 {
     public interface IServiceTypeService
     {
-        Task<ServiceType> GetByIdAsync(int id, string keycloakUserId);
-        Task<List<ServiceType>> GetAllAsync(string keycloakUserId);
-        Task<ServiceType> AddAsync(string keycloakUserId, ServiceTypeRequest request);
-        Task<ServiceType> UpdateAsync(int id, string keycloakUserId, ServiceTypeRequest request);
+        Task<List<ServiceType>> GetAllServiceTypeAsync(string keycloakUserId);
+        Task<ServiceType> GetServiceTypeByIdAsync(int id, string keycloakUserId);
+        Task<ServiceType> AddServiceTypeAsync(string keycloakUserId, ServiceTypeRequest request);
+        Task<ServiceType> UpdateServiceTypeAsync(int id, string keycloakUserId, ServiceTypeRequest request);
     }
 }

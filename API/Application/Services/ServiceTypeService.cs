@@ -26,16 +26,16 @@ namespace Application.Services
         }
 
 
-        public async Task<List<ServiceType>> GetAllAsync(string keycloakUserId)
+        public async Task<List<ServiceType>> GetAllServiceTypeAsync(string keycloakUserId)
         {
             var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
 
-            var serviceTypes = await _serviceTypeRepository.FindAllAsync(companyId);
+            var serviceTypes = await _serviceTypeRepository.GetAllAsync(companyId);
 
             return serviceTypes.ToDomain();
         }
 
-        public async Task<ServiceType> GetByIdAsync(int id, string keycloakUserId)
+        public async Task<ServiceType> GetServiceTypeByIdAsync(int id, string keycloakUserId)
         {
             var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
 
@@ -47,18 +47,18 @@ namespace Application.Services
             return serviceType.ToDomain();
         }
 
-        public async Task<ServiceType> AddAsync(string keycloakUserId, ServiceTypeRequest request)
+        public async Task<ServiceType> AddServiceTypeAsync(string keycloakUserId, ServiceTypeRequest request)
         {
             var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
 
             var serviceType = request.ToDomain(companyId);
 
-            var entity = await _serviceTypeRepository.CreateAsync(serviceType.ToEntity());
+            var entity = await _serviceTypeRepository.SaveAsync(serviceType.ToEntity());
 
             return entity.ToDomain();
         }
 
-        public async Task<ServiceType> UpdateAsync(int id, string keycloakUserId, ServiceTypeRequest request)
+        public async Task<ServiceType> UpdateServiceTypeAsync(int id, string keycloakUserId, ServiceTypeRequest request)
         {
             var companyId = await _companyAuthorizationService.GetCurrentUserCompanyIdAsync(keycloakUserId);
 
@@ -73,7 +73,7 @@ namespace Application.Services
 
             domain.MapToExistingEntity(entity);
 
-            var updated = await _serviceTypeRepository.UpdateAsync(entity);
+            var updated = await _serviceTypeRepository.SaveAsync(entity);
 
             return updated.ToDomain();
         }

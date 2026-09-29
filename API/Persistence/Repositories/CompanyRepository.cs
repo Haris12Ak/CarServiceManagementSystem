@@ -65,7 +65,9 @@ namespace Persistence.Repositories
         public async Task<Companies> FindByIdAsync(int companyId)
         {
             var company = await _context.Companies
-                .FindAsync(companyId);
+                .AsNoTracking()
+                .Where(x => x.Id == companyId && x.IsActive == true)
+                .FirstOrDefaultAsync();
 
             if (company == null)
                 return null;

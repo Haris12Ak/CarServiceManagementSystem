@@ -32,7 +32,7 @@ namespace API.Controllers
         {
             var currentUser = _currentSystemUserService.KeycloakUserId;
 
-            var serviceTypes = await _serviceTypeService.GetAllAsync(currentUser);
+            var serviceTypes = await _serviceTypeService.GetAllServiceTypeAsync(currentUser);
 
             return serviceTypes.ToDto();
         }
@@ -42,7 +42,7 @@ namespace API.Controllers
         {
             var currentUser = _currentSystemUserService.KeycloakUserId;
 
-            var serviceTypes = await _serviceTypeService.GetByIdAsync(id, currentUser);
+            var serviceTypes = await _serviceTypeService.GetServiceTypeByIdAsync(id, currentUser);
 
             return serviceTypes.ToDto();
         }
@@ -52,7 +52,7 @@ namespace API.Controllers
         {
             var currentUser = _currentSystemUserService.KeycloakUserId;
 
-            var serviceTypes = await _serviceTypeService.AddAsync(currentUser, request);
+            var serviceTypes = await _serviceTypeService.AddServiceTypeAsync(currentUser, request);
 
             return serviceTypes.ToDto();
         }
@@ -62,7 +62,7 @@ namespace API.Controllers
         {
             var currentUser = _currentSystemUserService.KeycloakUserId;
 
-            var serviceTypes = await _serviceTypeService.UpdateAsync(id, currentUser, request);
+            var serviceTypes = await _serviceTypeService.UpdateServiceTypeAsync(id, currentUser, request);
 
             return serviceTypes.ToDto();
         }

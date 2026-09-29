@@ -8,51 +8,8 @@ using System.Text;
 
 namespace Persistence.Repositories
 {
-    public class ServiceTypeRepository : IServiceTypeRepository
+    public class ServiceTypeRepository : EfRepository<ServiceType>, IServiceTypeRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public ServiceTypeRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-
-        public async Task<List<ServiceType>> FindAllAsync(int companyId)
-        {
-            return await _context.ServiceType.
-                Where(x => x.CompanyId == companyId && x.IsActive == true)
-                .ToListAsync();
-        }
-
-        public async Task<ServiceType> FindByIdAsync(int id, int companyId)
-        {
-            var serviceType = await _context.ServiceType
-                .Where(x =>
-                x.Id == id &&
-                x.CompanyId == companyId &&
-                x.IsActive == true)
-                .FirstOrDefaultAsync();
-
-            if (serviceType == null)
-                return null;
-
-            return serviceType;
-        }
-
-        public async Task<ServiceType> CreateAsync(ServiceType serviceType)
-        {
-            await _context.AddAsync(serviceType);
-            await _context.SaveChangesAsync();
-
-            return serviceType;
-        }
-
-        public async Task<ServiceType> UpdateAsync(ServiceType serviceType)
-        {
-            await _context.SaveChangesAsync();
-
-            return serviceType;
-        }
+        public ServiceTypeRepository(ApplicationDbContext context) : base(context) { }
     }
 }

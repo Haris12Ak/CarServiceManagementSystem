@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Persistence.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Persistence.Entities
 {
-    public class Employee : PersonBase
+    public class Employee : PersonBase, ICompanyEntity
     {
         public string Position { get; set; }
 

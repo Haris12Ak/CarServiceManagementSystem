@@ -5,11 +5,5 @@ using System.Text;
 
 namespace Persistence.Interfaces
 {
-    public interface IServiceTypeRepository
-    {
-        Task<List<ServiceType>> FindAllAsync(int companyId);
-        Task<ServiceType> FindByIdAsync(int id, int companyId);
-        Task<ServiceType> CreateAsync(ServiceType serviceType);
-        Task<ServiceType> UpdateAsync(ServiceType serviceType);
-    }
+    public interface IServiceTypeRepository : IRepository<ServiceType> { }
 }

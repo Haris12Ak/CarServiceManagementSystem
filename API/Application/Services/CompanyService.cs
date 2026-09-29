@@ -94,7 +94,7 @@ namespace Application.Services
 
                 var employee = request.ToDomain(employeeKeycloakId, companyId);
 
-                await _employeeRepository.CreateEmployeeAsync(employee.ToEntity());
+                await _employeeRepository.SaveAsync(employee.ToEntity());
             }
             catch (Exception ex)
             {
@@ -124,7 +124,7 @@ namespace Application.Services
 
                 var client = request.ToDomain(keycloakUserId, companyId);
 
-                await _clientRepository.CreateClientAsync(client.ToEntity());
+                await _clientRepository.SaveAsync(client.ToEntity());
             }
             catch (Exception ex)
             {

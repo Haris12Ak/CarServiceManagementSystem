@@ -7,14 +7,10 @@ using System.Text;
 
 namespace Persistence.Repositories
 {
-    public class ClientRepository : IClientRepository
+    public class ClientRepository : EfRepository<Client>, IClientRepository
     {
-        private readonly ApplicationDbContext _context;
+        public ClientRepository(ApplicationDbContext context) : base(context) { }
 
-        public ClientRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
         public async Task<int?> GetCompanyId(string keycloakUserId)
         {
             var companyId = await _context.Client
@@ -38,14 +34,5 @@ namespace Persistence.Repositories
 
             return client;
         }
-
-        public async Task<Client> CreateClientAsync(Client client)
-        {
-            await _context.Client.AddAsync(client);
-            await _context.SaveChangesAsync();
-
-            return client;
-        }
-
     }
 }

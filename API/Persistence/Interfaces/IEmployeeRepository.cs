@@ -5,10 +5,9 @@ using System.Text;
 
 namespace Persistence.Interfaces
 {
-    public interface IEmployeeRepository
+    public interface IEmployeeRepository : IRepository<Employee>
     {
         Task<int?> GetCompanyId(string keycloakUserId);
         Task<Employee> FindEmployeeByCompanyIdAsync(int companyId, string keycloakUserId);
-        Task<Employee> CreateEmployeeAsync(Employee employee);
     }
 }

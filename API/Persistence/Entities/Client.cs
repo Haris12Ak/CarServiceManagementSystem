@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Persistence.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Persistence.Entities
 {
-    public class Client : PersonBase
+    public class Client : PersonBase, ICompanyEntity
     {
         public string Address { get; set; }
         public string City { get; set; }
