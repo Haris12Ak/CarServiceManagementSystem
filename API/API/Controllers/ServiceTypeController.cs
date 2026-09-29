@@ -18,6 +18,7 @@ namespace API.Controllers
     {
         private readonly IServiceTypeService _serviceTypeService;
         private readonly ICurrentSystemUserService _currentSystemUserService;
+        private string CurrentUserId => _currentSystemUserService.KeycloakUserId;
 
         public ServiceTypeController(
             IServiceTypeService serviceTypeService,
@@ -30,9 +31,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<List<ServiceTypeDto>> GetAll()
         {
-            var currentUser = _currentSystemUserService.KeycloakUserId;
-
-            var serviceTypes = await _serviceTypeService.GetAllServiceTypeAsync(currentUser);
+            var serviceTypes = await _serviceTypeService.GetAllServiceTypeAsync(CurrentUserId);
 
             return serviceTypes.ToDto();
         }
@@ -40,29 +39,23 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ServiceTypeDto> GetById(int id)
         {
-            var currentUser = _currentSystemUserService.KeycloakUserId;
-
-            var serviceTypes = await _serviceTypeService.GetServiceTypeByIdAsync(id, currentUser);
+            var serviceTypes = await _serviceTypeService.GetServiceTypeByIdAsync(id, CurrentUserId);
 
             return serviceTypes.ToDto();
         }
 
         [HttpPost]
-        public async Task<ServiceTypeDto> Add(ServiceTypeRequest request)
+        public async Task<ServiceTypeDto> Add([FromBody] ServiceTypeRequest request)
         {
-            var currentUser = _currentSystemUserService.KeycloakUserId;
-
-            var serviceTypes = await _serviceTypeService.AddServiceTypeAsync(currentUser, request);
+            var serviceTypes = await _serviceTypeService.AddServiceTypeAsync(CurrentUserId, request);
 
             return serviceTypes.ToDto();
         }
 
         [HttpPut("{id}")]
-        public async Task<ServiceTypeDto> Update(int id, ServiceTypeRequest request)
+        public async Task<ServiceTypeDto> Update(int id, [FromBody] ServiceTypeRequest request)
         {
-            var currentUser = _currentSystemUserService.KeycloakUserId;
-
-            var serviceTypes = await _serviceTypeService.UpdateServiceTypeAsync(id, currentUser, request);
+            var serviceTypes = await _serviceTypeService.UpdateServiceTypeAsync(id, CurrentUserId, request);
 
             return serviceTypes.ToDto();
         }
