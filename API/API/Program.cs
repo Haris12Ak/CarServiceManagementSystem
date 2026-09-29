@@ -16,7 +16,12 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddPersistenceRepositories(builder.Configuration);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition =
+        System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

@@ -23,7 +23,25 @@ namespace Persistence.Mappers
                 TaxNumber = domain.TaxNumber,
                 Logo = domain.Logo,
                 IsActive = domain.IsActive,
-                CreatedAt = domain.CreatedAt
+                CreatedAt = domain.CreatedAt,
+                UpdatedAt = domain.UpdatedAt
+            };
+        }
+
+        public static DomainCompany ToDomain(this EntityCompany entity)
+        {
+            return new DomainCompany
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Email = entity.Email,
+                Phone = entity.Phone,
+                Address = entity.Address,
+                City = entity.City,
+                TaxNumber = entity.TaxNumber,
+                Logo = entity.Logo,
+                IsActive = entity.IsActive,
+                CreatedAt = entity.CreatedAt
             };
         }
     }

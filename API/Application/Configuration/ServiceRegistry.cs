@@ -23,6 +23,7 @@ namespace Application.Configuration
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

@@ -20,5 +20,21 @@ namespace Persistence.Repositories
 
             return companyId;
         }
+
+        public async Task<Client> FindByKeycloakId(string keycloakUserId, int comapnyId)
+        {
+            var client = await _context.Client
+                .AsNoTracking()
+                .Where(x => x.KeycloakUserId == keycloakUserId &&
+                x.CompanyId == comapnyId &&
+                x.IsActive == true)
+                .FirstOrDefaultAsync();
+
+            if (client == null)
+                return null;
+
+            return client;
+        }
+
     }
 }
