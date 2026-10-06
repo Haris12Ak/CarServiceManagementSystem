@@ -15,16 +15,13 @@ namespace Application.Services
     public class ServiceTypeService : IServiceTypeService
     {
         private readonly IServiceTypeRepository _serviceTypeRepository;
-        private readonly ICompanyAuthorizationService _companyAuthorizationService;
         private readonly ICurrentSystemUserService _currentSystemUserService;
 
         public ServiceTypeService(
             IServiceTypeRepository serviceTypeRepository,
-            ICompanyAuthorizationService companyAuthorizationService,
             ICurrentSystemUserService currentSystemUserService)
         {
             _serviceTypeRepository = serviceTypeRepository;
-            _companyAuthorizationService = companyAuthorizationService;
             _currentSystemUserService = currentSystemUserService;
         }
 
@@ -42,10 +39,8 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var serviceType = await _serviceTypeRepository.FindByIdAsync(id, companyId);
-
-            if (serviceType == null)
-                throw new NotFoundException($"Service type with id {id} not found.");
+            var serviceType = await _serviceTypeRepository.FindByIdAsync(id, companyId)
+                ?? throw new NotFoundException($"Service type with id {id} not found.");
 
             return serviceType.ToDomain();
         }
@@ -65,16 +60,14 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var entity = await _serviceTypeRepository.FindByIdAsync(id, companyId);
-
-            if (entity == null)
-                throw new NotFoundException($"Service type with id {id} not found.");
+            var entity = await _serviceTypeRepository.FindByIdAsync(id, companyId)
+                ?? throw new NotFoundException($"Service type with id {id} not found.");
 
             var domain = entity.ToDomain();
 
-            request.UpdateDomain(domain);
+            request.ApplyTo(domain);
 
-            domain.MapToExistingEntity(entity);
+            domain.ApplyTo(entity);
 
             var updated = await _serviceTypeRepository.SaveAsync(entity);
 

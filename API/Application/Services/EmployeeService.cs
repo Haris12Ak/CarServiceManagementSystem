@@ -34,10 +34,8 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var employee = await _employeeRepository.FindByIdAsync(id, companyId);
-
-            if (employee == null)
-                throw new NotFoundException($"Employee with id {id} not found.");
+            var employee = await _employeeRepository.FindByIdAsync(id, companyId) 
+                ?? throw new NotFoundException($"Employee with id {id} not found.");
 
             return employee.ToDomain();
         }

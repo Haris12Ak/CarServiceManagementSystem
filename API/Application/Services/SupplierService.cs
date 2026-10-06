@@ -39,10 +39,8 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var supplier = await _supplierRepository.FindByIdAsync(id, companyId);
-
-            if (supplier == null)
-                throw new NotFoundException($"Supplier with id {id} not found.");
+            var supplier = await _supplierRepository.FindByIdAsync(id, companyId)
+                ?? throw new NotFoundException($"Supplier with id {id} not found.");
 
             return supplier.ToDomain();
         }
@@ -62,10 +60,8 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var entity = await _supplierRepository.FindByIdAsync(id, companyId);
-
-            if (entity == null)
-                throw new NotFoundException($"Supplier with id {id} not found.");
+            var entity = await _supplierRepository.FindByIdAsync(id, companyId)
+                ?? throw new NotFoundException($"Supplier with id {id} not found.");
 
             var domain = entity.ToDomain();
 

@@ -43,7 +43,7 @@ namespace Persistence.Mappers
             };
         }
 
-        public static void MapToExistingEntity(this DomainServiceType domain, EntityServiceType entity)
+        public static void ApplyTo(this DomainServiceType domain, EntityServiceType entity)
         {
             if (domain == null)
                 throw new ArgumentNullException(nameof(domain));

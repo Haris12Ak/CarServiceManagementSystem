@@ -44,7 +44,7 @@ namespace Application.Mappers
             };
         }
 
-        public static void UpdateDomain(this ServiceTypeRequest request, ServiceType domain)
+        public static void ApplyTo(this ServiceTypeRequest request, ServiceType domain)
         {
             domain.Name = request.Name;
             domain.Description = request.Description;

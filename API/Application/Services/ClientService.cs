@@ -36,10 +36,8 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var client = await _clientRepository.FindByIdAsync(id, companyId);
-
-            if (client == null)
-                throw new NotFoundException($"Client with id {id} not found.");
+            var client = await _clientRepository.FindByIdAsync(id, companyId)
+                ?? throw new NotFoundException($"Client with id {id} not found.");
 
             return client.ToDomain();
         }

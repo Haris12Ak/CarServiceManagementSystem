@@ -17,13 +17,16 @@ namespace Application.Services
     {
         private readonly IVehicleRepository _vehicleRepository;
         private readonly ICurrentSystemUserService _currentSystemUserService;
+        private readonly IClientRepository _clientRepository;
 
         public VehicleService(
             IVehicleRepository vehicleRepository,
-            ICurrentSystemUserService currentSystemUserService)
+            ICurrentSystemUserService currentSystemUserService,
+            IClientRepository clientRepository)
         {
             _vehicleRepository = vehicleRepository;
             _currentSystemUserService = currentSystemUserService;
+            _clientRepository = clientRepository;
         }
 
         public async Task<List<Vehicles>> GetAllVehiclesAsync()
@@ -47,10 +50,8 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var vehicle = await _vehicleRepository.FindByIdAsync(id, companyId);
-
-            if (vehicle == null)
-                throw new NotFoundException($"Vehicle with id {id} not found.");
+            var vehicle = await _vehicleRepository.FindByIdAsync(id, companyId)
+                ?? throw new NotFoundException($"Vehicle with id {id} not found.");
 
             return vehicle.ToDomain();
         }
@@ -59,7 +60,10 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var vehicle = request.ToDomain(request.ClientId, companyId);
+            var client = await _clientRepository.FindByIdAsync(request.ClientId, companyId)
+                ?? throw new NotFoundException($"Client with id {request.ClientId} not found.");
+
+            var vehicle = request.ToDomain(client.Id, companyId);
 
             var entity = await _vehicleRepository.SaveAsync(vehicle.ToEntity());
 
@@ -70,10 +74,11 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var entity = await _vehicleRepository.FindByIdAsync(id, companyId);
+            var entity = await _vehicleRepository.FindByIdAsync(id, companyId)
+                ?? throw new NotFoundException($"Vehicle with id {id} not found.");
 
-            if (entity == null)
-                throw new NotFoundException($"Vehicle with id {id} not found.");
+            _ = await _clientRepository.FindByIdAsync(request.ClientId, companyId)
+                ?? throw new NotFoundException($"Client with id {request.ClientId} not found.");
 
             var domain = entity.ToDomain();
 

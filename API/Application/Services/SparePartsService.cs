@@ -42,10 +42,8 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var sparePart = await _sparePartsRepository.FindByIdAsync(id, companyId);
-
-            if (sparePart == null)
-                throw new NotFoundException($"SparePart with id {id} not found.");
+            var sparePart = await _sparePartsRepository.FindByIdAsync(id, companyId)
+                ?? throw new NotFoundException($"SparePart with id {id} not found.");
 
             return sparePart.ToDomain();
         }
@@ -54,10 +52,8 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var supplier = await _supplierRepository.FindByIdAsync(request.SupplierId, companyId);
-
-            if (supplier == null)
-                throw new NotFoundException($"Supplier with id {request.SupplierId} not found.");
+            var supplier = await _supplierRepository.FindByIdAsync(request.SupplierId, companyId)
+                ?? throw new NotFoundException($"Supplier with id {request.SupplierId} not found.");
 
             var sparePart = request.ToDomain(supplier.Id, companyId);
 
@@ -70,15 +66,11 @@ namespace Application.Services
         {
             var companyId = await _currentSystemUserService.GetCompanyIdAsync();
 
-            var entity = await _sparePartsRepository.FindByIdAsync(id, companyId);
+            var entity = await _sparePartsRepository.FindByIdAsync(id, companyId)
+                ?? throw new NotFoundException($"Spare part with id {id} not found.");
 
-            if (entity == null)
-                throw new NotFoundException($"Spare part with id {id} not found.");
-
-            var supplier = await _supplierRepository.FindByIdAsync(request.SupplierId, companyId);
-
-            if (supplier == null)
-                throw new NotFoundException($"Supplier with id {request.SupplierId} not found.");
+            _ = await _supplierRepository.FindByIdAsync(request.SupplierId, companyId)
+                ?? throw new NotFoundException($"Supplier with id {request.SupplierId} not found.");
 
             var domain = entity.ToDomain();
 
