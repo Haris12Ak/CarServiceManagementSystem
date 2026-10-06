@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Persistence.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Persistence.Entities
 {
-    public class SpareParts
+    public class SpareParts : ICompanyEntity
     {
         [Key]
         public int Id { get; set; }

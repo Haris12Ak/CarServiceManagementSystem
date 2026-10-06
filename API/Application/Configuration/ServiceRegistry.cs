@@ -26,6 +26,7 @@ namespace Application.Configuration
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IVehicleService, VehicleService>();
             services.AddScoped<ISupplierService, SupplierService>();
+            services.AddScoped<ISparePartsService, SparePartsService>();
 
             return services;
         }
