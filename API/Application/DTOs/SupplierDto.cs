@@ -1,16 +1,13 @@
-﻿using Persistence.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Persistence.Entities
+namespace Application.DTOs
 {
-    public class Suppliers : ICompanyEntity
+    public class SupplierDto
     {
-        [Key]
         public int Id { get; set; }
+        public int CompanyId { get; set; }
         public string Name { get; set; }
         public string? ContactPerson { get; set; }
         public string? Email { get; set; }
@@ -21,11 +18,5 @@ namespace Persistence.Entities
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
-        [ForeignKey(nameof(CompanyId))]
-        public Companies Companies { get; set; }
-        public int CompanyId { get; set; }
-
-        public ICollection<SpareParts> SpareParts { get; set; } = new List<SpareParts>();
     }
 }
