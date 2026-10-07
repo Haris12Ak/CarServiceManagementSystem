@@ -29,7 +29,8 @@ namespace Persistence.Entities
         public Suppliers Suppliers { get; set; }
         public int SupplierId { get; set; }
 
-        public ICollection<Inventory> Inventory { get; set; } = new List<Inventory>();
+        public Inventory Inventory { get; set; }
+
         public ICollection<InventoryTransactions> InventoryTransactions { get; set; } = new List<InventoryTransactions>();
         public ICollection<WorkOrderParts> WorkOrderParts { get; set; } = new List<WorkOrderParts>();
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,9 +11,10 @@ namespace Persistence.Entities
     {
         [Key]
         public int Id { get; set; }
-        public string Type { get; set; }
+        public InventoryTransactionType Type { get; set; }
         public int Quantity { get; set; }
-        public string? ReferenceType { get; set; }
+        public InventoryTransactionReferenceType? ReferenceType { get; set; }
+        public int? ReferenceId { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? Note { get; set; }
 
