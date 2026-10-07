@@ -39,19 +39,13 @@ namespace Persistence.Repositories
                     };
                 }
 
+                company.Settings.Companies = company;
+                adminEmployee.Companies = company;
+
                 await _context.Companies.AddAsync(company);
-                await _context.SaveChangesAsync();
-
-                adminEmployee.CompanyId = company.Id;
                 await _context.Employee.AddAsync(adminEmployee);
-                await _context.SaveChangesAsync();
 
-                if (company.Settings != null)
-                {
-                    company.Settings.CompanyId = company.Id;
-                    _context.CompanySettings.Update(company.Settings);
-                    await _context.SaveChangesAsync();
-                }
+                await _context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
             }
