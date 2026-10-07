@@ -41,7 +41,7 @@ namespace Application.Services
             {
                 var companyDomain = company.ToDomain();
 
-                var employee = await _employeeRepository.FindByKeycloakId(keycloakUserId, companyId);
+                var employee = await _employeeRepository.FindByKeycloakIdAsync(keycloakUserId, companyId);
 
                 if (employee != null)
                 {

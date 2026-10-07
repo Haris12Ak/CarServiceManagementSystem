@@ -17,6 +17,14 @@ namespace Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<InventoryTransactions>()
+                .Property(x => x.Type)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<InventoryTransactions>()
+                .Property(x => x.ReferenceType)
+                .HasConversion<string>();
+
             base.OnModelCreating(modelBuilder);
         }
 

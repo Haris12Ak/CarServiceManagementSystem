@@ -13,5 +13,6 @@ namespace Application.Requests
         public decimal PurchasePrice { get; set; }
         public decimal SellingPrice { get; set; }
         public int MinimumStock { get; set; }
+        public int InitialQuantity { get; set; }
     }
 }

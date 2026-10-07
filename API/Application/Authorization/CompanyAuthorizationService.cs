@@ -24,7 +24,7 @@ namespace Application.Authorization
 
         public async Task<int> GetCurrentUserCompanyIdAsync(string keycloakUserId)
         {
-            var employeeCompanyId = await _employeeRepository.GetCompanyId(keycloakUserId);
+            var employeeCompanyId = await _employeeRepository.GetCompanyIdAsync(keycloakUserId);
 
             if (employeeCompanyId.HasValue)
                 return employeeCompanyId.Value;

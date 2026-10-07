@@ -7,5 +7,7 @@ namespace Persistence.Interfaces
 {
     public interface ISparePartsRepository : IRepository<SpareParts>
     {
+        Task<bool> IsExistAsync(string partNumber, int companyId);
+        Task<SpareParts> SaveAsync(SpareParts entity, int initialQuantity, int employeeId);
     }
 }

@@ -11,7 +11,7 @@ namespace Persistence.Repositories
     {
         public EmployeeRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<int?> GetCompanyId(string keycloakUserId)
+        public async Task<int?> GetCompanyIdAsync(string keycloakUserId)
         {
             var companyId = await _context.Employee
                 .Where(x => x.KeycloakUserId == keycloakUserId && x.IsActive == true)
@@ -21,7 +21,7 @@ namespace Persistence.Repositories
             return companyId;
         }
 
-        public async Task<Employee> FindByKeycloakId(string keycloakUserId, int companyId)
+        public async Task<Employee> FindByKeycloakIdAsync(string keycloakUserId, int companyId)
         {
             var employee = await _context.Employee
                 .AsNoTracking()
