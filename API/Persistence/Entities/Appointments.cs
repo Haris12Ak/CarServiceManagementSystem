@@ -32,8 +32,8 @@ namespace Persistence.Entities
         public int VehicleId { get; set; }
 
         [ForeignKey(nameof(EmployeeId))]
-        public Employee Employee { get; set; }
-        public int EmployeeId { get; set; }
+        public Employee? Employee { get; set; }
+        public int? EmployeeId { get; set; }
 
         public ICollection<WorkOrders> WorkOrders { get; set; } = new List<WorkOrders>();
     }
