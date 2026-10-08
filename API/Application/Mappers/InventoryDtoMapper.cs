@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Requests;
+using Domain.Helpers;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,9 @@ namespace Application.Mappers
                 CompanyId = inventory.CompanyId,
                 SparePartId = inventory.SparePartId,
                 Quantity = inventory.Quantity,
+                StockStatus = StockStatusHelper.GetStockStatus(
+                    inventory.Quantity,
+                    inventory.SpareParts.MinimumStock),
                 UpdatedAt = inventory.UpdatedAt
             };
         }
@@ -24,20 +28,20 @@ namespace Application.Mappers
         public static List<InventoryTransactionsDto> ToDto(this IEnumerable<InventoryTransactions> domains)
         {
             return domains
-                .Select(domain => 
+                .Select(domain =>
                 new InventoryTransactionsDto
-            {
-                Id = domain.Id,
-                CompanyId = domain.CompanyId,
-                SparePartId = domain.SparePartId,
-                EmployeeId = domain.EmployeeId,
-                Type = domain.Type,
-                Quantity = domain.Quantity,
-                ReferenceType = domain.ReferenceType,
-                ReferenceId = domain.ReferenceId,
-                CreatedAt = domain.CreatedAt,
-                Note = domain.Note
-            }).ToList();
+                {
+                    Id = domain.Id,
+                    CompanyId = domain.CompanyId,
+                    SparePartId = domain.SparePartId,
+                    EmployeeId = domain.EmployeeId,
+                    Type = domain.Type,
+                    Quantity = domain.Quantity,
+                    ReferenceType = domain.ReferenceType,
+                    ReferenceId = domain.ReferenceId,
+                    CreatedAt = domain.CreatedAt,
+                    Note = domain.Note
+                }).ToList();
         }
 
     }

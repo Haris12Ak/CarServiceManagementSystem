@@ -15,6 +15,7 @@ namespace Persistence.Repositories
         {
             var inventory = await _context.Inventory
                 .AsNoTracking()
+                .Include(x => x.SpareParts)
                 .Where(x =>
                 x.SparePartId == sparePart &&
                 x.CompanyId == companyId)

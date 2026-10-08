@@ -12,5 +12,6 @@ namespace Domain.Models
         public int SparePartId { get; set; }
         public int Quantity { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public SpareParts SpareParts { get; set; }
     }
 }

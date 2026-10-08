@@ -21,7 +21,8 @@ namespace Persistence.Mappers
                 CompanyId = entity.CompanyId,
                 SparePartId = entity.SparePartId,
                 Quantity = entity.Quantity,
-                UpdatedAt = entity.UpdatedAt
+                UpdatedAt = entity.UpdatedAt,
+                SpareParts = entity.SpareParts.ToDomain()
             };
         }
 
