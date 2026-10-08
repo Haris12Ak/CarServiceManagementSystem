@@ -33,5 +33,7 @@ namespace Persistence.Entities
         public ICollection<InventoryTransactions> InventoryTransactions { get; set; } = new List<InventoryTransactions>();
         public ICollection<VehicleInspections> VehicleInspections { get; set; } = new List<VehicleInspections>();
         public ICollection<Invoices> Invoices { get; set; } = new List<Invoices>();
+        public ICollection<InspectionItemDefinition> InspectionItemDefinition { get; set; } = new List<InspectionItemDefinition>();
+        public ICollection<InspectionCategories> InspectionCategories { get; set; } = new List<InspectionCategories>();
     }
 }

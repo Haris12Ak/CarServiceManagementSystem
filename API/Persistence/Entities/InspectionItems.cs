@@ -11,13 +11,15 @@ namespace Persistence.Entities
     {
         [Key]
         public int Id { get; set; }
-        public string Category { get; set; }
-        public string Name { get; set; }
         public InspectionItemStatus Status { get; set; }
         public string? Notes { get; set; }
 
         [ForeignKey(nameof(VehicleInspectionId))]
         public VehicleInspections VehicleInspections { get; set; }
         public int VehicleInspectionId { get; set; }
+
+        [ForeignKey(nameof(InspectionItemDefinitionId))]
+        public InspectionItemDefinition InspectionItemDefinition { get; set; }
+        public int InspectionItemDefinitionId { get; set; }
     }
 }

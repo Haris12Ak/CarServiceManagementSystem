@@ -47,5 +47,7 @@ namespace Persistence
         public DbSet<WorkOrders> WorkOrders { get; set; }
         public DbSet<WorkOrderServices> WorkOrderServices { get; set; }
         public DbSet<WorkOrderStatusHistories> WorkOrderStatusHistories { get; set; }
+        public DbSet<InspectionItemDefinition> InspectionItemDefinition { get; set; }
+        public DbSet<InspectionCategories> InspectionCategories { get; set; }
     }
 }
