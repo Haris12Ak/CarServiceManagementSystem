@@ -32,40 +32,40 @@ namespace Application.Services
             _employeeRepository = employeeRepository;
         }
 
-        public async Task<List<SpareParts>> GetAllSparePartsAsync()
+        public async Task<List<SpareParts>> GetAllSparePartsAsync(CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var spareParts = await _sparePartsRepository.GetAllAsync(companyId);
+            var spareParts = await _sparePartsRepository.GetAllAsync(companyId, cancellationToken);
 
             return spareParts.ToDomain();
         }
 
-        public async Task<SpareParts> GetSparePartsByIdAsync(int id)
+        public async Task<SpareParts> GetSparePartsByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var sparePart = await _sparePartsRepository.FindByIdAsync(id, companyId)
+            var sparePart = await _sparePartsRepository.FindByIdAsync(id, companyId, cancellationToken)
                 ?? throw new NotFoundException($"SparePart with id {id} not found.");
 
             return sparePart.ToDomain();
         }
 
-        public async Task<SpareParts> AddSparePartsAsync(SparePartsRequest request)
+        public async Task<SpareParts> AddSparePartsAsync(SparePartsRequest request, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
             var keycloakUserId = _currentSystemUserService.KeycloakUserId;
 
-            var isExists = await _sparePartsRepository.IsExistAsync(request.PartNumber, companyId);
+            var isExists = await _sparePartsRepository.IsExistAsync(request.PartNumber, companyId, cancellationToken);
 
             if (isExists)
                 throw new BadRequestException($"The part {request.Name} with the entered partNumber - {request.PartNumber}, already exists in the database.");
 
-            var supplier = await _supplierRepository.FindByIdAsync(request.SupplierId, companyId)
+            var supplier = await _supplierRepository.FindByIdAsync(request.SupplierId, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Supplier with id {request.SupplierId} not found.");
 
-            var employee = await _employeeRepository.FindByKeycloakIdAsync(keycloakUserId, companyId)
+            var employee = await _employeeRepository.FindByKeycloakIdAsync(keycloakUserId, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Employee with keycloakUserId {keycloakUserId} not found.");
 
             var sparePart = request.ToDomain(supplier.Id, companyId);
@@ -73,19 +73,20 @@ namespace Application.Services
             var entity = await _sparePartsRepository.SaveAsync(
                 sparePart.ToEntity(),
                 request.InitialQuantity,
-                employee.Id);
+                employee.Id,
+                cancellationToken);
 
             return entity.ToDomain();
         }
 
-        public async Task<SpareParts> UpdateSparePartsAsync(int id, SparePartsRequest request)
+        public async Task<SpareParts> UpdateSparePartsAsync(int id, SparePartsRequest request, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var entity = await _sparePartsRepository.FindByIdAsync(id, companyId)
+            var entity = await _sparePartsRepository.FindByIdAsync(id, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Spare part with id {id} not found.");
 
-            _ = await _supplierRepository.FindByIdAsync(request.SupplierId, companyId)
+            _ = await _supplierRepository.FindByIdAsync(request.SupplierId, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Supplier with id {request.SupplierId} not found.");
 
             var domain = entity.ToDomain();
@@ -94,7 +95,7 @@ namespace Application.Services
 
             domain.ApplyTo(entity);
 
-            var updated = await _sparePartsRepository.SaveAsync(entity);
+            var updated = await _sparePartsRepository.SaveAsync(entity, cancellationToken);
 
             return updated.ToDomain();
         }

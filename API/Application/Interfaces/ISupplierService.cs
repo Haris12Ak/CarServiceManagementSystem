@@ -8,9 +8,9 @@ namespace Application.Interfaces
 {
     public interface ISupplierService
     {
-        Task<List<Suppliers>> GetAllSuppliersTypeAsync();
-        Task<Suppliers> GetSupplierByIdAsync(int id);
-        Task<Suppliers> AddSupplierAsync(SupplierRequest request);
-        Task<Suppliers> UpdateSupplierAsync(int id, SupplierRequest request);
+        Task<List<Suppliers>> GetAllSuppliersTypeAsync(CancellationToken cancellationToken);
+        Task<Suppliers> GetSupplierByIdAsync(int id, CancellationToken cancellationToken);
+        Task<Suppliers> AddSupplierAsync(SupplierRequest request, CancellationToken cancellationToken);
+        Task<Suppliers> UpdateSupplierAsync(int id, SupplierRequest request, CancellationToken cancellationToken);
     }
 }

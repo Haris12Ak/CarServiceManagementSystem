@@ -22,33 +22,33 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<SupplierDto>> GetAll()
+        public async Task<List<SupplierDto>> GetAll(CancellationToken cancellationToken)
         {
-            var suppliers = await _supplierService.GetAllSuppliersTypeAsync();
+            var suppliers = await _supplierService.GetAllSuppliersTypeAsync(cancellationToken);
 
             return suppliers.ToDto();
         }
 
         [HttpGet("{id}")]
-        public async Task<SupplierDto> GetById(int id)
+        public async Task<SupplierDto> GetById(int id, CancellationToken cancellationToken)
         {
-            var supplier = await _supplierService.GetSupplierByIdAsync(id);
+            var supplier = await _supplierService.GetSupplierByIdAsync(id, cancellationToken);
 
             return supplier.ToDto();
         }
 
         [HttpPost]
-        public async Task<SupplierDto> Add([FromBody] SupplierRequest request)
+        public async Task<SupplierDto> Add([FromBody] SupplierRequest request, CancellationToken cancellationToken)
         {
-            var supplier = await _supplierService.AddSupplierAsync(request);
+            var supplier = await _supplierService.AddSupplierAsync(request, cancellationToken);
 
             return supplier.ToDto();
         }
 
         [HttpPut("{id}")]
-        public async Task<SupplierDto> Update(int id, [FromBody] SupplierRequest request)
+        public async Task<SupplierDto> Update(int id, [FromBody] SupplierRequest request, CancellationToken cancellationToken)
         {
-            var supplier = await _supplierService.UpdateSupplierAsync(id, request);
+            var supplier = await _supplierService.UpdateSupplierAsync(id, request, cancellationToken);
 
             return supplier.ToDto();
         }

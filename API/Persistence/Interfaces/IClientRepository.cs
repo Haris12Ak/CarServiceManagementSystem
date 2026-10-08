@@ -7,7 +7,7 @@ namespace Persistence.Interfaces
 {
     public interface IClientRepository : IRepository<Client>
     {
-        Task<int?> GetCompanyId(string keycloakUserId);
-        Task<Client> FindByKeycloakId(string keycloakUserId, int comapnyId);
+        Task<int?> GetCompanyId(string keycloakUserId, CancellationToken cancellationToken);
+        Task<Client> FindByKeycloakId(string keycloakUserId, int comapnyId, CancellationToken cancellationToken);
     }
 }

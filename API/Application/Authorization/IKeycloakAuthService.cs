@@ -7,9 +7,9 @@ namespace Application.Authorization
 {
     public interface IKeycloakAuthService
     {
-        Task AuthenticateAdminAsync();
-        Task<string> CreateUserAsync(User user, bool forcePasswordUpdated);
-        Task DeleteUserAsync(string keycloakUserId);
-        Task AssignRoleAsync(string keycloakUserId, string roleName);
+        Task AuthenticateAdminAsync(CancellationToken cancellationToken);
+        Task<string> CreateUserAsync(User user, bool forcePasswordUpdated, CancellationToken cancellationToken);
+        Task DeleteUserAsync(string keycloakUserId, CancellationToken cancellationToken);
+        Task AssignRoleAsync(string keycloakUserId, string roleName, CancellationToken cancellationToken);
     }
 }

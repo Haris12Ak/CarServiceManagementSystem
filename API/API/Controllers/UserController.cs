@@ -21,9 +21,9 @@ namespace API.Controllers
         }
 
         [HttpGet("Info")]
-        public async Task<UserDto> GetUserInfo()
+        public async Task<UserDto> GetUserInfo(CancellationToken cancellationToken)
         {
-            var userInfo = await _userService.GetUserInfoAsync();
+            var userInfo = await _userService.GetUserInfoAsync(cancellationToken);
 
             return userInfo.ToDto();
         }

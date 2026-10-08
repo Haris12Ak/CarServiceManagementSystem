@@ -19,7 +19,7 @@ namespace Persistence.Repositories
             _dbSet = _context.Set<TEntity>();
         }
 
-        public virtual async Task<List<TEntity>> GetAllAsync(int companyId, bool includeInactive = false)
+        public virtual async Task<List<TEntity>> GetAllAsync(int companyId, CancellationToken cancellationToken, bool includeInactive = false)
         {
             IQueryable<TEntity> query = _dbSet.AsNoTracking();
 
@@ -28,10 +28,10 @@ namespace Persistence.Repositories
             if (!includeInactive && HasIsActive())
                 query = query.Where(x => EF.Property<bool?>(x, "IsActive") == true);
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken);
         }
 
-        public virtual async Task<TEntity?> FindByIdAsync(int id, int companyId, bool includeInactive = false)
+        public virtual async Task<TEntity?> FindByIdAsync(int id, int companyId, CancellationToken cancellationToken, bool includeInactive = false)
         {
             IQueryable<TEntity> query = _dbSet.AsNoTracking();
 
@@ -40,10 +40,10 @@ namespace Persistence.Repositories
             if (!includeInactive && HasIsActive())
                 query = query.Where(x => EF.Property<bool?>(x, "IsActive") == true);
 
-            return await query.FirstOrDefaultAsync();
+            return await query.FirstOrDefaultAsync(cancellationToken);
         }
 
-        public virtual async Task<TEntity> SaveAsync(TEntity entity)
+        public virtual async Task<TEntity> SaveAsync(TEntity entity, CancellationToken cancellationToken)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -53,26 +53,26 @@ namespace Persistence.Repositories
             if (entry.State == EntityState.Detached)
             {
                 if (entity.Id == 0)
-                    await _dbSet.AddAsync(entity);
+                    await _dbSet.AddAsync(entity, cancellationToken);
                 else
                     _dbSet.Update(entity);
             }
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return entity;
         }
 
-        public virtual async Task<bool> DeleteAsync(int id, int companyId)
+        public virtual async Task<bool> DeleteAsync(int id, int companyId, CancellationToken cancellationToken)
         {
-            var entity = await FindByIdAsync(id, companyId);
+            var entity = await FindByIdAsync(id, companyId, cancellationToken);
 
             if (entity == null)
                 return false;
 
             _dbSet.Remove(entity);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return true;
         }

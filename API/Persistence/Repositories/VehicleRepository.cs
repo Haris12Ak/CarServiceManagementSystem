@@ -18,7 +18,7 @@ namespace Persistence.Repositories
             _clientRepository = clientRepository;
         }
 
-        public async Task<List<Vehicles>> GetByClientIdAsync(int clientId, int companyId)
+        public async Task<List<Vehicles>> GetByClientIdAsync(int clientId, int companyId, CancellationToken cancellationToken)
         {
             return await _context.Vehicles
                 .AsNoTracking()
@@ -26,17 +26,17 @@ namespace Persistence.Repositories
                     v.ClientId == clientId &&
                     v.CompanyId == companyId &&
                     v.Client.IsActive == true)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public override async Task<List<Vehicles>> GetAllAsync(int companyId, bool includeInactive = false)
+        public override async Task<List<Vehicles>> GetAllAsync(int companyId, CancellationToken cancellationToken, bool includeInactive = false)
         {
             return await _context.Vehicles
                 .AsNoTracking()
                 .Where(v =>
                     v.CompanyId == companyId &&
                     v.Client.IsActive == true)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
     }
 }

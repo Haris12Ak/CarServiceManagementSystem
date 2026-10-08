@@ -23,20 +23,20 @@ namespace Application.Services
             _currentSystemUserService = currentSystemUserService;
         }
 
-        public async Task<List<Client>> GetAllClientAsync()
+        public async Task<List<Client>> GetAllClientAsync(CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var clients = await _clientRepository.GetAllAsync(companyId);
+            var clients = await _clientRepository.GetAllAsync(companyId, cancellationToken);
 
             return clients.ToDomain();
         }
 
-        public async Task<Client> GetClientByIdAsync(int id)
+        public async Task<Client> GetClientByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var client = await _clientRepository.FindByIdAsync(id, companyId)
+            var client = await _clientRepository.FindByIdAsync(id, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Client with id {id} not found.");
 
             return client.ToDomain();

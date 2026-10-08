@@ -26,41 +26,41 @@ namespace Application.Services
             _currentSystemUserService = currentSystemUserService;
         }
 
-        public async Task<List<Suppliers>> GetAllSuppliersTypeAsync()
+        public async Task<List<Suppliers>> GetAllSuppliersTypeAsync(CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var suppliers = await _supplierRepository.GetAllAsync(companyId);
+            var suppliers = await _supplierRepository.GetAllAsync(companyId, cancellationToken);
 
             return suppliers.ToDomain();
         }
 
-        public async Task<Suppliers> GetSupplierByIdAsync(int id)
+        public async Task<Suppliers> GetSupplierByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var supplier = await _supplierRepository.FindByIdAsync(id, companyId)
+            var supplier = await _supplierRepository.FindByIdAsync(id, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Supplier with id {id} not found.");
 
             return supplier.ToDomain();
         }
 
-        public async Task<Suppliers> AddSupplierAsync(SupplierRequest request)
+        public async Task<Suppliers> AddSupplierAsync(SupplierRequest request, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
             var supplier = request.ToDomain(companyId);
 
-            var entity = await _supplierRepository.SaveAsync(supplier.ToEntity());
+            var entity = await _supplierRepository.SaveAsync(supplier.ToEntity(), cancellationToken);
 
             return entity.ToDomain();
         }
 
-        public async Task<Suppliers> UpdateSupplierAsync(int id, SupplierRequest request)
+        public async Task<Suppliers> UpdateSupplierAsync(int id, SupplierRequest request, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var entity = await _supplierRepository.FindByIdAsync(id, companyId)
+            var entity = await _supplierRepository.FindByIdAsync(id, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Supplier with id {id} not found.");
 
             var domain = entity.ToDomain();
@@ -69,7 +69,7 @@ namespace Application.Services
 
             domain.ApplyTo(entity);
 
-            var updated = await _supplierRepository.SaveAsync(entity);
+            var updated = await _supplierRepository.SaveAsync(entity, cancellationToken);
 
             return updated.ToDomain();
         }

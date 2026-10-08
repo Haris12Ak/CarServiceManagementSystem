@@ -24,10 +24,10 @@ namespace Application.Authorization
             _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
             ?? throw new AuthorizationException("User is not authorized !");
 
-        public async Task<int> GetCompanyIdAsync()
+        public async Task<int> GetCompanyIdAsync(CancellationToken cancellationToken)
         {
             return await _companyAuthorizationService
-                .GetCurrentUserCompanyIdAsync(KeycloakUserId);
+                .GetCurrentUserCompanyIdAsync(KeycloakUserId, cancellationToken);
         }
     }
 }

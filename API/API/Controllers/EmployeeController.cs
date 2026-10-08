@@ -27,25 +27,25 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<EmployeeDto>> GetAll()
+        public async Task<List<EmployeeDto>> GetAll(CancellationToken cancellationToken)
         {
-            var employees = await _employeeService.GetAllEmployeeAsync();
+            var employees = await _employeeService.GetAllEmployeeAsync(cancellationToken);
             return employees.ToDto();
         }
 
         [HttpGet("{id}")]
-        public async Task<EmployeeDto> GetById(int id)
+        public async Task<EmployeeDto> GetById(int id, CancellationToken cancellationToken)
         {
-            var employee = await _employeeService.GetEmployeeByIdAsync(id);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id, cancellationToken);
             return employee.ToDto();
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddEmployeeToCompany([FromBody] EmployeeInsertRequest request)
+        public async Task<IActionResult> AddEmployeeToCompany([FromBody] EmployeeInsertRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                await _companyService.AddEmployeeToCompanyAsync(request);
+                await _companyService.AddEmployeeToCompanyAsync(request, cancellationToken);
 
                 return Ok(new { Message = $"Employee {request.FirstName} {request.LastName} has been successfully added." });
             }

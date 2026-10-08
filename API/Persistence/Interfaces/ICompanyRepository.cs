@@ -7,8 +7,8 @@ namespace Persistence.Interfaces
 {
     public interface ICompanyRepository
     {
-        Task<Companies> FindByIdAsync(int companyId);
-        Task CrateCompanyWithAdminAsync(Companies company, Employee adminEmployee);
-        Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId);
+        Task<Companies> FindByIdAsync(int companyId, CancellationToken cancellationToken);
+        Task CrateCompanyWithAdminAsync(Companies company, Employee adminEmployee, CancellationToken cancellationToken);
+        Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId, CancellationToken cancellationToken);
     }
 }

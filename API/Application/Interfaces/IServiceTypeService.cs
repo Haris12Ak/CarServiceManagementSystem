@@ -8,9 +8,9 @@ namespace Application.Interfaces
 {
     public interface IServiceTypeService
     {
-        Task<List<ServiceType>> GetAllServiceTypeAsync();
-        Task<ServiceType> GetServiceTypeByIdAsync(int id);
-        Task<ServiceType> AddServiceTypeAsync(ServiceTypeRequest request);
-        Task<ServiceType> UpdateServiceTypeAsync(int id, ServiceTypeRequest request);
+        Task<List<ServiceType>> GetAllServiceTypeAsync(CancellationToken cancellationToken);
+        Task<ServiceType> GetServiceTypeByIdAsync(int id, CancellationToken cancellationToken);
+        Task<ServiceType> AddServiceTypeAsync(ServiceTypeRequest request, CancellationToken cancellationToken);
+        Task<ServiceType> UpdateServiceTypeAsync(int id, ServiceTypeRequest request, CancellationToken cancellationToken);
     }
 }

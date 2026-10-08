@@ -29,19 +29,19 @@ namespace Application.Services
             _clientRepository = clientRepository;
         }
 
-        public async Task<(Employee? emoloyee, Client? client, Companies? company)> GetUserInfoAsync()
+        public async Task<(Employee? emoloyee, Client? client, Companies? company)> GetUserInfoAsync(CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
             var keycloakUserId = _currentSystemUserService.KeycloakUserId;
 
-            var company = await _companyRepository.FindByIdAsync(companyId);
+            var company = await _companyRepository.FindByIdAsync(companyId, cancellationToken);
 
             if (company != null)
             {
                 var companyDomain = company.ToDomain();
 
-                var employee = await _employeeRepository.FindByKeycloakIdAsync(keycloakUserId, companyId);
+                var employee = await _employeeRepository.FindByKeycloakIdAsync(keycloakUserId, companyId, cancellationToken);
 
                 if (employee != null)
                 {
@@ -51,7 +51,7 @@ namespace Application.Services
                 }
                 else
                 {
-                    var client = await _clientRepository.FindByKeycloakId(keycloakUserId, companyId);
+                    var client = await _clientRepository.FindByKeycloakId(keycloakUserId, companyId, cancellationToken);
 
                     var clientDomain = client.ToDomain();
 

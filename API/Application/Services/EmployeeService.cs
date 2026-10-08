@@ -21,20 +21,20 @@ namespace Application.Services
             _currentSystemUserService = currentSystemUserService;
         }
 
-        public async Task<List<Employee>> GetAllEmployeeAsync()
+        public async Task<List<Employee>> GetAllEmployeeAsync(CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var employees = await _employeeRepository.GetAllAsync(companyId);
+            var employees = await _employeeRepository.GetAllAsync(companyId, cancellationToken);
 
             return employees.ToDomain();
         }
 
-        public async Task<Employee> GetEmployeeByIdAsync(int id)
+        public async Task<Employee> GetEmployeeByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var employee = await _employeeRepository.FindByIdAsync(id, companyId) 
+            var employee = await _employeeRepository.FindByIdAsync(id, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Employee with id {id} not found.");
 
             return employee.ToDomain();

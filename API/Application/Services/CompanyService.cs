@@ -41,9 +41,9 @@ namespace Application.Services
             _logger = logger;
         }
 
-        public async Task RegisterCompanyAsync(CompanyRegistration registration)
+        public async Task RegisterCompanyAsync(CompanyRegistration registration, CancellationToken cancellationToken)
         {
-            await _keycloakAuthService.AuthenticateAdminAsync();
+            await _keycloakAuthService.AuthenticateAdminAsync(cancellationToken);
 
             var user = UserMapper.MapToUser(
                 registration.AdminEmployee.FirstName,
@@ -56,94 +56,94 @@ namespace Application.Services
 
             try
             {
-                keycloakUserId = await _keycloakAuthService.CreateUserAsync(user, false);
+                keycloakUserId = await _keycloakAuthService.CreateUserAsync(user, false, cancellationToken);
 
-                await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "owner");
+                await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "owner", cancellationToken);
 
                 var company = registration.ToDomain();
 
                 var adminEmployee = registration.ToDomain(keycloakUserId);
 
-                await _companyRepository.CrateCompanyWithAdminAsync(company.ToEntity(), adminEmployee.ToEntity());
+                await _companyRepository.CrateCompanyWithAdminAsync(company.ToEntity(), adminEmployee.ToEntity(), cancellationToken);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Company registration failed. Attempting to remove Keycloak user {UserId}", keycloakUserId);
 
-                await RollbackUserAsync(keycloakUserId);
+                await RollbackUserAsync(keycloakUserId, cancellationToken);
 
                 throw;
             }
         }
 
-        public async Task AddEmployeeToCompanyAsync(EmployeeInsertRequest request)
+        public async Task AddEmployeeToCompanyAsync(EmployeeInsertRequest request, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
             var user = UserMapper.MapToUser(request.FirstName, request.LastName, request.Email, null, null);
 
-            await _keycloakAuthService.AuthenticateAdminAsync();
+            await _keycloakAuthService.AuthenticateAdminAsync(cancellationToken);
 
             string keycloakUserId = null;
 
             try
             {
-                keycloakUserId = await _keycloakAuthService.CreateUserAsync(user, true);
+                keycloakUserId = await _keycloakAuthService.CreateUserAsync(user, true, cancellationToken);
 
-                await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "employee");
+                await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "employee", cancellationToken);
 
                 var employee = request.ToDomain(keycloakUserId, companyId);
 
-                await _employeeRepository.SaveAsync(employee.ToEntity());
+                await _employeeRepository.SaveAsync(employee.ToEntity(), cancellationToken);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Adding new employee failed. Attempting to remove Keycloak user {UserId}", keycloakUserId);
 
-                await RollbackUserAsync(keycloakUserId);
+                await RollbackUserAsync(keycloakUserId, cancellationToken);
 
                 throw;
             }
         }
 
-        public async Task AddClientToCompanyAsync(ClientInsertRequest request)
+        public async Task AddClientToCompanyAsync(ClientInsertRequest request, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
             var user = UserMapper.MapToUser(request.FirstName, request.LastName, request.Email, null, null);
 
-            await _keycloakAuthService.AuthenticateAdminAsync();
+            await _keycloakAuthService.AuthenticateAdminAsync(cancellationToken);
 
             string keycloakUserId = null;
 
             try
             {
-                keycloakUserId = await _keycloakAuthService.CreateUserAsync(user, true);
+                keycloakUserId = await _keycloakAuthService.CreateUserAsync(user, true, cancellationToken);
 
-                await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "client");
+                await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "client", cancellationToken);
 
                 var client = request.ToDomain(keycloakUserId, companyId);
 
-                await _clientRepository.SaveAsync(client.ToEntity());
+                await _clientRepository.SaveAsync(client.ToEntity(), cancellationToken);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Adding new client failed. Attempting to remove Keycloak user {UserId}", keycloakUserId);
 
-                await RollbackUserAsync(keycloakUserId);
+                await RollbackUserAsync(keycloakUserId, cancellationToken);
 
                 throw;
             }
         }
 
-        private async Task RollbackUserAsync(string? keycloakUserId)
+        private async Task RollbackUserAsync(string? keycloakUserId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(keycloakUserId))
                 return;
 
             try
             {
-                await _keycloakAuthService.DeleteUserAsync(keycloakUserId);
+                await _keycloakAuthService.DeleteUserAsync(keycloakUserId, cancellationToken);
                 _logger.LogInformation("Compensation: deleted Keycloak user {UserId}", keycloakUserId);
             }
             catch (Exception ex)

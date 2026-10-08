@@ -7,7 +7,7 @@ namespace Persistence.Interfaces
 {
     public interface IEmployeeRepository : IRepository<Employee>
     {
-        Task<int?> GetCompanyIdAsync(string keycloakUserId);
-        Task<Employee> FindByKeycloakIdAsync(string keycloakUserId, int companyId);
+        Task<int?> GetCompanyIdAsync(string keycloakUserId, CancellationToken cancellationToken);
+        Task<Employee> FindByKeycloakIdAsync(string keycloakUserId, int companyId, CancellationToken cancellationToken);
     }
 }

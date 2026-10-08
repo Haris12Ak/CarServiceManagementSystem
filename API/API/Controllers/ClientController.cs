@@ -27,27 +27,27 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<ClientDto>> GetAll()
+        public async Task<List<ClientDto>> GetAll(CancellationToken cancellationToken)
         {
-            var clients = await _clientService.GetAllClientAsync();
+            var clients = await _clientService.GetAllClientAsync(cancellationToken);
 
             return clients.ToDto();
         }
 
         [HttpGet("{id}")]
-        public async Task<ClientDto> GetById(int id)
+        public async Task<ClientDto> GetById(int id, CancellationToken cancellationToken)
         {
-            var client = await _clientService.GetClientByIdAsync(id);
+            var client = await _clientService.GetClientByIdAsync(id, cancellationToken);
 
             return client.ToDto();
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddClientToCompany([FromBody] ClientInsertRequest request)
+        public async Task<IActionResult> AddClientToCompany([FromBody] ClientInsertRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                await _companyService.AddClientToCompanyAsync(request);
+                await _companyService.AddClientToCompanyAsync(request, cancellationToken);
 
                 return Ok(new { Message = $"Client {request.FirstName} {request.LastName} has been successfully added." });
             }

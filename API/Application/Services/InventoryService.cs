@@ -29,57 +29,61 @@ namespace Application.Services
             _employeeRepository = employeeRepository;
         }
 
-        public async Task<Inventory> GetInventoryBySparePartIdAsync(int sparePartId)
+        public async Task<Inventory> GetInventoryBySparePartIdAsync(int sparePartId, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var inventory = await _inventoryRepository.FindBySparePartIdAsync(sparePartId, companyId)
+            var inventory = await _inventoryRepository.FindBySparePartIdAsync(sparePartId, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Inventory with sparePartId {sparePartId} not found.");
 
             return inventory.ToDomain();
         }
 
-        public async Task<Inventory> AddStockAsync(int sparePartId, InventoryRequest request)
+        public async Task<Inventory> AddStockAsync(int sparePartId, InventoryRequest request, CancellationToken cancellationToken)
         {
             return await ChangeQuantityAsync(sparePartId,
                 request,
                 InventoryTransactionType.In,
-                InventoryTransactionReferenceType.Purchase);
+                InventoryTransactionReferenceType.Purchase,
+                cancellationToken);
         }
 
-        public async Task<Inventory> AdjustInAsync(int sparePartId, InventoryRequest request)
+        public async Task<Inventory> AdjustInAsync(int sparePartId, InventoryRequest request, CancellationToken cancellationToken)
         {
             return await ChangeQuantityAsync(sparePartId,
                 request,
                 InventoryTransactionType.AdjustmentIn,
-                InventoryTransactionReferenceType.Adjustment);
+                InventoryTransactionReferenceType.Adjustment,
+                cancellationToken);
         }
 
-        public async Task<Inventory> AdjustOutAsync(int sparePartId, InventoryRequest request)
+        public async Task<Inventory> AdjustOutAsync(int sparePartId, InventoryRequest request, CancellationToken cancellationToken)
         {
             return await ChangeQuantityAsync(sparePartId,
                 request,
                 InventoryTransactionType.AdjustmentOut,
-                InventoryTransactionReferenceType.Adjustment);
+                InventoryTransactionReferenceType.Adjustment,
+                cancellationToken);
         }
 
-        public async Task<Inventory> RemoveStockAsync(int sparePartId, int workOrderId, InventoryRequest request)
+        public async Task<Inventory> RemoveStockAsync(int sparePartId, int workOrderId, InventoryRequest request, CancellationToken cancellationToken)
         {
             return await ChangeQuantityAsync(sparePartId,
                 request,
                 InventoryTransactionType.Out,
                 InventoryTransactionReferenceType.WorkOrder,
+                cancellationToken,
                 workOrderId);
         }
 
-        public async Task<List<InventoryTransactions>> GetInventoryTransactionAsync(int sparePartId)
+        public async Task<List<InventoryTransactions>> GetInventoryTransactionAsync(int sparePartId, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            _ = await _inventoryRepository.FindBySparePartIdAsync(sparePartId, companyId)
+            _ = await _inventoryRepository.FindBySparePartIdAsync(sparePartId, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Inventory with sparePartId {sparePartId} not found.");
 
-            var inventoryTransactions = await _inventoryRepository.GetInventoryTransactionsBySparePartId(sparePartId, companyId);
+            var inventoryTransactions = await _inventoryRepository.GetInventoryTransactionsBySparePartId(sparePartId, companyId, cancellationToken);
 
             return inventoryTransactions.ToDomain();
         }
@@ -89,15 +93,16 @@ namespace Application.Services
             InventoryRequest request,
             InventoryTransactionType type,
             InventoryTransactionReferenceType referenceType,
+            CancellationToken cancellationToken,
             int? referenceId = null)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
             var keycloakUserId = _currentSystemUserService.KeycloakUserId;
 
-            var inventory = await _inventoryRepository.FindBySparePartIdAsync(sparePartId, companyId)
+            var inventory = await _inventoryRepository.FindBySparePartIdAsync(sparePartId, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Inventory with sparePartId {sparePartId} not found.");
 
-            var employee = await _employeeRepository.FindByKeycloakIdAsync(keycloakUserId, companyId)
+            var employee = await _employeeRepository.FindByKeycloakIdAsync(keycloakUserId, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Employee with keycloakUserId {keycloakUserId} not found.");
 
             switch (type)
@@ -136,7 +141,7 @@ namespace Application.Services
                 EmployeeId = employee.Id
             };
 
-            var updated = await _inventoryRepository.SaveAsync(inventory, inventoryTransactions.ToEntity());
+            var updated = await _inventoryRepository.SaveAsync(inventory, inventoryTransactions.ToEntity(), cancellationToken);
 
             return updated.ToDomain();
         }

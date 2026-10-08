@@ -22,14 +22,14 @@ namespace Application.Authorization
             _companyRepository = companyRepository;
         }
 
-        public async Task<int> GetCurrentUserCompanyIdAsync(string keycloakUserId)
+        public async Task<int> GetCurrentUserCompanyIdAsync(string keycloakUserId, CancellationToken cancellationToken)
         {
-            var employeeCompanyId = await _employeeRepository.GetCompanyIdAsync(keycloakUserId);
+            var employeeCompanyId = await _employeeRepository.GetCompanyIdAsync(keycloakUserId, cancellationToken);
 
             if (employeeCompanyId.HasValue)
                 return employeeCompanyId.Value;
 
-            var clientCompanyId = await _clientRepository.GetCompanyId(keycloakUserId);
+            var clientCompanyId = await _clientRepository.GetCompanyId(keycloakUserId, cancellationToken);
 
             if (clientCompanyId.HasValue)
                 return clientCompanyId.Value;
@@ -37,9 +37,9 @@ namespace Application.Authorization
             throw new NotFoundException("User does not belong to any company.");
         }
 
-        public async Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId)
+        public async Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId, CancellationToken cancellationToken)
         {
-            return await _companyRepository.IsUserInCompanyAsync(keycloakUserId, companyId);
+            return await _companyRepository.IsUserInCompanyAsync(keycloakUserId, companyId, cancellationToken);
         }
     }
 }

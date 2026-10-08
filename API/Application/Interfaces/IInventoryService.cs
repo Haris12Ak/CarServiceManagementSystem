@@ -8,11 +8,11 @@ namespace Application.Interfaces
 {
     public interface IInventoryService
     {
-        Task<Inventory> GetInventoryBySparePartIdAsync(int sparePartId);
-        Task<Inventory> AddStockAsync(int sparePartId, InventoryRequest request);
-        Task<Inventory> RemoveStockAsync(int sparePartId, int workOrderId, InventoryRequest request);
-        Task<Inventory> AdjustInAsync(int sparePartId, InventoryRequest request);
-        Task<Inventory> AdjustOutAsync(int sparePartId, InventoryRequest request);
-        Task<List<InventoryTransactions>> GetInventoryTransactionAsync(int sparePartId);
+        Task<Inventory> GetInventoryBySparePartIdAsync(int sparePartId, CancellationToken cancellationToken);
+        Task<Inventory> AddStockAsync(int sparePartId, InventoryRequest request, CancellationToken cancellationToken);
+        Task<Inventory> RemoveStockAsync(int sparePartId, int workOrderId, InventoryRequest request, CancellationToken cancellationToken);
+        Task<Inventory> AdjustInAsync(int sparePartId, InventoryRequest request, CancellationToken cancellationToken);
+        Task<Inventory> AdjustOutAsync(int sparePartId, InventoryRequest request, CancellationToken cancellationToken);
+        Task<List<InventoryTransactions>> GetInventoryTransactionAsync(int sparePartId, CancellationToken cancellationToken);
     }
 }

@@ -7,7 +7,7 @@ namespace Application.Authorization
 {
     public interface ICompanyAuthorizationService
     {
-        Task<int> GetCurrentUserCompanyIdAsync(string keycloakUserId);
-        Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId);
+        Task<int> GetCurrentUserCompanyIdAsync(string keycloakUserId, CancellationToken cancellationToken);
+        Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId, CancellationToken cancellationToken);
     }
 }

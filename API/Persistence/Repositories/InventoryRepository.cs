@@ -11,7 +11,7 @@ namespace Persistence.Repositories
     {
         public InventoryRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<Inventory> FindBySparePartIdAsync(int sparePart, int companyId)
+        public async Task<Inventory> FindBySparePartIdAsync(int sparePart, int companyId, CancellationToken cancellationToken)
         {
             var inventory = await _context.Inventory
                 .AsNoTracking()
@@ -19,7 +19,7 @@ namespace Persistence.Repositories
                 .Where(x =>
                 x.SparePartId == sparePart &&
                 x.CompanyId == companyId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (inventory == null)
                 return null;
@@ -27,31 +27,31 @@ namespace Persistence.Repositories
             return inventory;
         }
 
-        public Task<List<InventoryTransactions>> GetInventoryTransactionsBySparePartId(int sparePartId, int companyId)
+        public Task<List<InventoryTransactions>> GetInventoryTransactionsBySparePartId(int sparePartId, int companyId, CancellationToken cancellationToken)
         {
             var inventoryTransactions = _context.InventoryTransactions
                 .AsNoTracking()
                 .Where(x =>
                 x.SparePartId == sparePartId &&
                 x.CompanyId == companyId)
-                .ToListAsync();
-
+                .ToListAsync(cancellationToken);
+            
             return inventoryTransactions;
         }
 
-        public async Task<Inventory> SaveAsync(Inventory inventory, InventoryTransactions inventoryTransactions)
+        public async Task<Inventory> SaveAsync(Inventory inventory, InventoryTransactions inventoryTransactions, CancellationToken cancellationToken)
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
             try
             {
                 _context.Inventory.Update(inventory);
 
-                await _context.InventoryTransactions.AddAsync(inventoryTransactions);
+                await _context.InventoryTransactions.AddAsync(inventoryTransactions, cancellationToken);
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
-                await transaction.CommitAsync();
+                await transaction.CommitAsync(cancellationToken);
 
                 return inventory;
             }

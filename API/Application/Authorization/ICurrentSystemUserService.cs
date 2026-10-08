@@ -7,6 +7,6 @@ namespace Application.Authorization
     public interface ICurrentSystemUserService
     {
         string KeycloakUserId { get; }
-        Task<int> GetCompanyIdAsync();
+        Task<int> GetCompanyIdAsync(CancellationToken cancellationToken);
     }
 }

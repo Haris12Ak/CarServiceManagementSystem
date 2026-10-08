@@ -17,9 +17,9 @@ namespace Persistence.Repositories
             _context = context;
         }
 
-        public async Task CrateCompanyWithAdminAsync(Companies company, Employee adminEmployee)
+        public async Task CrateCompanyWithAdminAsync(Companies company, Employee adminEmployee, CancellationToken cancellationToken)
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
             try
             {
@@ -42,12 +42,12 @@ namespace Persistence.Repositories
                 company.Settings.Companies = company;
                 adminEmployee.Companies = company;
 
-                await _context.Companies.AddAsync(company);
-                await _context.Employee.AddAsync(adminEmployee);
+                await _context.Companies.AddAsync(company, cancellationToken);
+                await _context.Employee.AddAsync(adminEmployee, cancellationToken);
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
-                await transaction.CommitAsync();
+                await transaction.CommitAsync(cancellationToken);
             }
             catch
             {
@@ -56,12 +56,12 @@ namespace Persistence.Repositories
             }
         }
 
-        public async Task<Companies> FindByIdAsync(int companyId)
+        public async Task<Companies> FindByIdAsync(int companyId, CancellationToken cancellationToken)
         {
             var company = await _context.Companies
                 .AsNoTracking()
                 .Where(x => x.Id == companyId && x.IsActive == true)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (company == null)
                 return null;
@@ -69,13 +69,14 @@ namespace Persistence.Repositories
             return company;
         }
 
-        public async Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId)
+        public async Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId, CancellationToken cancellationToken)
         {
             var isEmployee = await _context.Employee
                 .AnyAsync(e =>
                 e.KeycloakUserId == keycloakUserId &&
                 e.CompanyId == companyId &&
-                e.IsActive == true);
+                e.IsActive == true,
+                cancellationToken);
 
             if (isEmployee)
                 return true;
@@ -84,7 +85,8 @@ namespace Persistence.Repositories
                 .AnyAsync(c =>
                 c.KeycloakUserId == keycloakUserId &&
                 c.CompanyId == companyId &&
-                c.IsActive == true);
+                c.IsActive == true,
+                cancellationToken);
         }
     }
 }

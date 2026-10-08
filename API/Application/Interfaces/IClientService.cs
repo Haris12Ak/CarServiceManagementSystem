@@ -7,7 +7,7 @@ namespace Application.Interfaces
 {
     public interface IClientService
     {
-        Task<List<Client>> GetAllClientAsync();
-        Task<Client> GetClientByIdAsync(int id);
+        Task<List<Client>> GetAllClientAsync(CancellationToken cancellationToken);
+        Task<Client> GetClientByIdAsync(int id, CancellationToken cancellationToken);
     }
 }

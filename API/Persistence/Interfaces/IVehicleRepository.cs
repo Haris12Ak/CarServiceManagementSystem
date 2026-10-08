@@ -7,6 +7,6 @@ namespace Persistence.Interfaces
 {
     public interface IVehicleRepository : IRepository<Vehicles>
     {
-        Task<List<Vehicles>> GetByClientIdAsync(int clientId, int companyId);
+        Task<List<Vehicles>> GetByClientIdAsync(int clientId, int companyId, CancellationToken cancellationToken);
     }
 }

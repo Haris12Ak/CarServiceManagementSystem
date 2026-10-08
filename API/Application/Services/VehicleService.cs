@@ -29,55 +29,55 @@ namespace Application.Services
             _clientRepository = clientRepository;
         }
 
-        public async Task<List<Vehicles>> GetAllVehiclesAsync()
+        public async Task<List<Vehicles>> GetAllVehiclesAsync(CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var vehicles = await _vehicleRepository.GetAllAsync(companyId);
+            var vehicles = await _vehicleRepository.GetAllAsync(companyId, cancellationToken);
 
             return vehicles.ToDomain();
         }
-        public async Task<List<Vehicles>> GetVehiclesByClientIdAsync(int clientId)
+        public async Task<List<Vehicles>> GetVehiclesByClientIdAsync(int clientId, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var vehicles = await _vehicleRepository.GetByClientIdAsync(clientId, companyId);
+            var vehicles = await _vehicleRepository.GetByClientIdAsync(clientId, companyId, cancellationToken);
 
             return vehicles.ToDomain();
         }
 
-        public async Task<Vehicles> GetVehicleById(int id)
+        public async Task<Vehicles> GetVehicleById(int id, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var vehicle = await _vehicleRepository.FindByIdAsync(id, companyId)
+            var vehicle = await _vehicleRepository.FindByIdAsync(id, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Vehicle with id {id} not found.");
 
             return vehicle.ToDomain();
         }
 
-        public async Task<Vehicles> AddVehicleAsync(VehicleRequest request)
+        public async Task<Vehicles> AddVehicleAsync(VehicleRequest request, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var client = await _clientRepository.FindByIdAsync(request.ClientId, companyId)
+            var client = await _clientRepository.FindByIdAsync(request.ClientId, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Client with id {request.ClientId} not found.");
 
             var vehicle = request.ToDomain(client.Id, companyId);
 
-            var entity = await _vehicleRepository.SaveAsync(vehicle.ToEntity());
+            var entity = await _vehicleRepository.SaveAsync(vehicle.ToEntity(), cancellationToken);
 
             return entity.ToDomain();
         }
 
-        public async Task<Vehicles> UpdateVehicleAsync(int id, VehicleRequest request)
+        public async Task<Vehicles> UpdateVehicleAsync(int id, VehicleRequest request, CancellationToken cancellationToken)
         {
-            var companyId = await _currentSystemUserService.GetCompanyIdAsync();
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
 
-            var entity = await _vehicleRepository.FindByIdAsync(id, companyId)
+            var entity = await _vehicleRepository.FindByIdAsync(id, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Vehicle with id {id} not found.");
 
-            _ = await _clientRepository.FindByIdAsync(request.ClientId, companyId)
+            _ = await _clientRepository.FindByIdAsync(request.ClientId, companyId, cancellationToken)
                 ?? throw new NotFoundException($"Client with id {request.ClientId} not found.");
 
             var domain = entity.ToDomain();
@@ -86,7 +86,7 @@ namespace Application.Services
 
             domain.ApplyTo(entity);
 
-            var updated = await _vehicleRepository.SaveAsync(entity);
+            var updated = await _vehicleRepository.SaveAsync(entity, cancellationToken);
 
             return updated.ToDomain();
         }

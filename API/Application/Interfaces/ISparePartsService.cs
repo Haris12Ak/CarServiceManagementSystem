@@ -8,9 +8,9 @@ namespace Application.Interfaces
 {
     public interface ISparePartsService
     {
-        Task<List<SpareParts>> GetAllSparePartsAsync();
-        Task<SpareParts> GetSparePartsByIdAsync(int id);
-        Task<SpareParts> AddSparePartsAsync(SparePartsRequest request);
-        Task<SpareParts> UpdateSparePartsAsync(int id, SparePartsRequest request);
+        Task<List<SpareParts>> GetAllSparePartsAsync(CancellationToken cancellationToken);
+        Task<SpareParts> GetSparePartsByIdAsync(int id, CancellationToken cancellationToken);
+        Task<SpareParts> AddSparePartsAsync(SparePartsRequest request, CancellationToken cancellationToken);
+        Task<SpareParts> UpdateSparePartsAsync(int id, SparePartsRequest request, CancellationToken cancellationToken);
     }
 }

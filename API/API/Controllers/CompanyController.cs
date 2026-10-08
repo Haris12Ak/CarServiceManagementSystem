@@ -20,11 +20,11 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterCompany([FromBody] CompanyRegistration registration)
+        public async Task<IActionResult> RegisterCompany([FromBody] CompanyRegistration registration, CancellationToken cancellationToken)
         {
             try
             {
-                await _companyService.RegisterCompanyAsync(registration);
+                await _companyService.RegisterCompanyAsync(registration, cancellationToken);
 
                 return Ok(new { Message = "You have successfully registered your company." });
             }

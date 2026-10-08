@@ -21,7 +21,7 @@ namespace Application.Authorization
             _configuration = configuration;
         }
 
-        public async Task AuthenticateAdminAsync()
+        public async Task AuthenticateAdminAsync(CancellationToken cancellationToken)
         {
             var tokenEndpoint = $"{_configuration["Keycloak:BaseUrl"]}/realms/master/protocol/openid-connect/token";
 
@@ -35,7 +35,7 @@ namespace Application.Authorization
 
             var content = new FormUrlEncodedContent(requestBody);
 
-            var response = await _httpClient.PostAsync(tokenEndpoint, content);
+            var response = await _httpClient.PostAsync(tokenEndpoint, content, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -51,7 +51,7 @@ namespace Application.Authorization
                 throw new Exception("failed");
         }
 
-        public async Task<string> CreateUserAsync(User user, bool forcePasswordUpdated)
+        public async Task<string> CreateUserAsync(User user, bool forcePasswordUpdated, CancellationToken cancellationToken)
         {
             var userPayload = new
             {
@@ -84,7 +84,7 @@ namespace Application.Authorization
 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync(url, content);
+            var response = await _httpClient.PostAsync(url, content, cancellationToken);
 
             response.EnsureSuccessStatusCode();
 
@@ -104,7 +104,7 @@ namespace Application.Authorization
             return id;
         }
 
-        public async Task DeleteUserAsync(string keycloakUserId)
+        public async Task DeleteUserAsync(string keycloakUserId, CancellationToken cancellationToken)
         {
             var realm = _configuration["Keycloak:Realm"];
             var baseUrl = _configuration["Keycloak:BaseUrl"];
@@ -112,16 +112,16 @@ namespace Application.Authorization
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
 
-            await client.DeleteAsync($"{baseUrl}/admin/realms/{realm}/users/{keycloakUserId}");
+            await client.DeleteAsync($"{baseUrl}/admin/realms/{realm}/users/{keycloakUserId}", cancellationToken);
         }
 
-        public async Task AssignRoleAsync(string keycloakUserId, string roleName)
+        public async Task AssignRoleAsync(string keycloakUserId, string roleName, CancellationToken cancellationToken)
         {
             var realm = _configuration["Keycloak:Realm"];
             var baseUrl = _configuration["Keycloak:BaseUrl"];
 
             var roleUrl = $"{baseUrl}/admin/realms/{realm}/roles/{roleName}";
-            var roleResp = await _httpClient.GetAsync(roleUrl);
+            var roleResp = await _httpClient.GetAsync(roleUrl, cancellationToken);
             roleResp.EnsureSuccessStatusCode();
 
             var roleJson = await roleResp.Content.ReadAsStringAsync();
@@ -141,7 +141,7 @@ namespace Application.Authorization
             var json = JsonSerializer.Serialize(roleRep);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var assignResp = await _httpClient.PostAsync(assignUrl, content);
+            var assignResp = await _httpClient.PostAsync(assignUrl, content, cancellationToken);
             assignResp.EnsureSuccessStatusCode();
         }
     }

@@ -8,10 +8,10 @@ namespace Application.Interfaces
 {
     public interface IVehicleService
     {
-        Task<List<Vehicles>> GetAllVehiclesAsync();
-        Task<List<Vehicles>> GetVehiclesByClientIdAsync(int clientId);
-        Task<Vehicles> GetVehicleById(int id);
-        Task<Vehicles> AddVehicleAsync(VehicleRequest request);
-        Task<Vehicles> UpdateVehicleAsync(int id, VehicleRequest request);
+        Task<List<Vehicles>> GetAllVehiclesAsync(CancellationToken cancellationToken);
+        Task<List<Vehicles>> GetVehiclesByClientIdAsync(int clientId, CancellationToken cancellationToken);
+        Task<Vehicles> GetVehicleById(int id, CancellationToken cancellationToken);
+        Task<Vehicles> AddVehicleAsync(VehicleRequest request, CancellationToken cancellationToken);
+        Task<Vehicles> UpdateVehicleAsync(int id, VehicleRequest request, CancellationToken cancellationToken);
     }
 }

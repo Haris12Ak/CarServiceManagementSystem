@@ -13,23 +13,24 @@ namespace Persistence.Repositories
     {
         public SparePartsRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<bool> IsExistAsync(string partNumber, int companyId)
+        public async Task<bool> IsExistAsync(string partNumber, int companyId, CancellationToken cancellationToken)
         {
             var result = partNumber.Trim().ToUpper();
 
             return await _context.SpareParts
                 .AnyAsync(sp => sp.PartNumber == result &&
                 sp.CompanyId == companyId &&
-                sp.IsActive == true);
+                sp.IsActive == true,
+                cancellationToken);
         }
 
-        public async Task<SpareParts> SaveAsync(SpareParts entity, int initialQuantity, int employeeId)
+        public async Task<SpareParts> SaveAsync(SpareParts entity, int initialQuantity, int employeeId, CancellationToken cancellationToken)
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
             try
             {
-                await _context.SpareParts.AddAsync(entity);
+                await _context.SpareParts.AddAsync(entity, cancellationToken);
 
                 var inventory = new Inventory
                 {
@@ -39,7 +40,7 @@ namespace Persistence.Repositories
                     UpdatedAt = DateTime.Now
                 };
 
-                await _context.Inventory.AddAsync(inventory);
+                await _context.Inventory.AddAsync(inventory, cancellationToken);
 
                 if (initialQuantity > 0)
                 {
@@ -54,12 +55,12 @@ namespace Persistence.Repositories
                         CreatedAt = DateTime.Now,
                     };
 
-                    await _context.InventoryTransactions.AddAsync(inventoryTransaction);
+                    await _context.InventoryTransactions.AddAsync(inventoryTransaction, cancellationToken);
                 }
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
-                await transaction.CommitAsync();
+                await transaction.CommitAsync(cancellationToken);
 
                 return entity;
             }

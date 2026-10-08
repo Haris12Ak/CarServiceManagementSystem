@@ -7,7 +7,7 @@ namespace Application.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<List<Employee>> GetAllEmployeeAsync();
-        Task<Employee> GetEmployeeByIdAsync(int id);
+        Task<List<Employee>> GetAllEmployeeAsync(CancellationToken cancellationToken);
+        Task<Employee> GetEmployeeByIdAsync(int id, CancellationToken cancellationToken);
     }
 }

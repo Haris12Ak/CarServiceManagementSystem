@@ -24,33 +24,33 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<ServiceTypeDto>> GetAll()
+        public async Task<List<ServiceTypeDto>> GetAll(CancellationToken cancellationToken)
         {
-            var serviceTypes = await _serviceTypeService.GetAllServiceTypeAsync();
+            var serviceTypes = await _serviceTypeService.GetAllServiceTypeAsync(cancellationToken);
 
             return serviceTypes.ToDto();
         }
 
         [HttpGet("{id}")]
-        public async Task<ServiceTypeDto> GetById(int id)
+        public async Task<ServiceTypeDto> GetById(int id, CancellationToken cancellationToken)
         {
-            var serviceTypes = await _serviceTypeService.GetServiceTypeByIdAsync(id);
+            var serviceTypes = await _serviceTypeService.GetServiceTypeByIdAsync(id, cancellationToken);
 
             return serviceTypes.ToDto();
         }
 
         [HttpPost]
-        public async Task<ServiceTypeDto> Add([FromBody] ServiceTypeRequest request)
+        public async Task<ServiceTypeDto> Add([FromBody] ServiceTypeRequest request, CancellationToken cancellationToken)
         {
-            var serviceTypes = await _serviceTypeService.AddServiceTypeAsync(request);
+            var serviceTypes = await _serviceTypeService.AddServiceTypeAsync(request, cancellationToken);
 
             return serviceTypes.ToDto();
         }
 
         [HttpPut("{id}")]
-        public async Task<ServiceTypeDto> Update(int id, [FromBody] ServiceTypeRequest request)
+        public async Task<ServiceTypeDto> Update(int id, [FromBody] ServiceTypeRequest request, CancellationToken cancellationToken)
         {
-            var serviceTypes = await _serviceTypeService.UpdateServiceTypeAsync(id, request);
+            var serviceTypes = await _serviceTypeService.UpdateServiceTypeAsync(id, request, cancellationToken);
 
             return serviceTypes.ToDto();
         }
