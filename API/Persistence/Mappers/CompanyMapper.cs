@@ -16,6 +16,7 @@ namespace Persistence.Mappers
             return new EntityCompany
             {
                 Name = domain.Name,
+                Slug = domain.Slug,
                 Email = domain.Email,
                 Phone = domain.Phone,
                 Address = domain.Address,
@@ -34,6 +35,7 @@ namespace Persistence.Mappers
             {
                 Id = entity.Id,
                 Name = entity.Name,
+                Slug = entity.Slug,
                 Email = entity.Email,
                 Phone = entity.Phone,
                 Address = entity.Address,

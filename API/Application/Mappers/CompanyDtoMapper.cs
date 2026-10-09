@@ -9,11 +9,12 @@ namespace Application.Mappers
 {
     public static class CompanyDtoMapper
     {
-        public static Companies ToDomain(this CompanyRegistration request)
+        public static Companies ToDomain(this CompanyRegistration request, string slug)
         {
             return new Companies
             {
                 Name = request.CompanyName,
+                Slug = slug,
                 Email = request.CompanyEmail,
                 Phone = request.CompanyPhone,
                 Address = request.CompanyAddress,

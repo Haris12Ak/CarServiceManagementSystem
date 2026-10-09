@@ -88,5 +88,14 @@ namespace Persistence.Repositories
                 c.IsActive == true,
                 cancellationToken);
         }
+
+        public async Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken)
+        {
+            return await _context.Companies
+                .AsNoTracking()
+                .AnyAsync(c =>
+                c.Slug == slug,
+                cancellationToken);
+        }
     }
 }

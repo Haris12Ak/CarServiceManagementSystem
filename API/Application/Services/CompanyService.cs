@@ -60,9 +60,11 @@ namespace Application.Services
 
                 await _keycloakAuthService.AssignRoleAsync(keycloakUserId, "owner", cancellationToken);
 
-                var company = registration.ToDomain();
+                var slug = await GenerateUniqueSlugAsync(registration.CompanyName, cancellationToken);
 
-                var adminEmployee = registration.ToDomain(keycloakUserId);
+                var company = CompanyDtoMapper.ToDomain(registration, slug);
+
+                var adminEmployee = EmployeeDtoMapper.ToDomain(registration, keycloakUserId);
 
                 await _companyRepository.CrateCompanyWithAdminAsync(company.ToEntity(), adminEmployee.ToEntity(), cancellationToken);
             }
@@ -150,6 +152,21 @@ namespace Application.Services
             {
                 _logger.LogError(ex, "Failed to delete Keycloak user {UserId} after rollback. Schedule manual/automatic cleanup.", keycloakUserId);
             }
+        }
+
+        private async Task<string> GenerateUniqueSlugAsync(string companyName, CancellationToken cancellationToken)
+        {
+            var baseSlug = SlugHelper.Generate(companyName);
+            var slug = baseSlug;
+            var suffix = 2;
+
+            while (await _companyRepository.SlugExistsAsync(slug, cancellationToken))
+            {
+                slug = $"{baseSlug}-{suffix}";
+                suffix++;
+            }
+
+            return slug;
         }
     }
 }

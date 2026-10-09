@@ -25,6 +25,10 @@ namespace Persistence
                 .Property(x => x.ReferenceType)
                 .HasConversion<string>();
 
+            modelBuilder.Entity<Companies>()
+                .HasIndex(c => c.Slug)
+                .IsUnique();
+
             base.OnModelCreating(modelBuilder);
         }
 

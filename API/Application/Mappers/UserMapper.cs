@@ -41,6 +41,7 @@ namespace Application.Mappers
             {
                 dto.CompanyId = company.Id;
                 dto.CompanyName = company.Name;
+                dto.CompanySlug = company.Slug;
                 dto.CompanyEmail = company.Email;
                 dto.CompanyPhone = company.Phone;
                 dto.CompanyAddress = company.Address;
