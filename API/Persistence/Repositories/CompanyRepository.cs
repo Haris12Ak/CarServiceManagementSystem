@@ -34,8 +34,13 @@ namespace Persistence.Repositories
                         InvoicePrefix = domainDefaultsSettings.InvoicePrefix,
                         WorkOrderPrefix = domainDefaultsSettings.WorkOrderPrefix,
                         DefaultLaborRate = domainDefaultsSettings.DefaultLaborRate,
-                        AppointmentDuration = domainDefaultsSettings.AppointmentDuration,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.Now,
+                        BookingIntervalMinutes = domainDefaultsSettings.BookingIntervalMinutes,
+                        MinimumBookingNoticeHours = domainDefaultsSettings.MinimumBookingNoticeHours,
+                        MaximumBookingDaysAhead = domainDefaultsSettings.MaximumBookingDaysAhead,
+                        AllowSameDayBooking = domainDefaultsSettings.AllowSameDayBooking,
+                        RequireAppointmentConfirmation = domainDefaultsSettings.RequireAppointmentConfirmation,
+                        OnlineBookingEnabled = domainDefaultsSettings.OnlineBookingEnabled
                     };
                 }
 

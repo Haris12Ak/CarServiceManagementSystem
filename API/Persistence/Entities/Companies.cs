@@ -36,5 +36,7 @@ namespace Persistence.Entities
         public ICollection<Invoices> Invoices { get; set; } = new List<Invoices>();
         public ICollection<InspectionItemDefinition> InspectionItemDefinition { get; set; } = new List<InspectionItemDefinition>();
         public ICollection<InspectionCategories> InspectionCategories { get; set; } = new List<InspectionCategories>();
+        public ICollection<CompanyWorkingHours> CompanyWorkingHours { get; set; } = new List<CompanyWorkingHours>();
+        public ICollection<CompanyWorkingHourExceptions> CompanyWorkingHourExceptions { get; set; } = new List<CompanyWorkingHourExceptions>();
     }
 }

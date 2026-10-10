@@ -7,22 +7,32 @@ namespace Domain.Defaults
 {
     public static class DefaultCompanySettings
     {
-        public const string Currency = "BAM";
-        public const decimal TaxRate = 17m;
-        public const string InvoicePrefix = "INV";
-        public const string WorkOrderPrefix = "WO";
-        public const decimal DefaultLaborRate = 0m;
-        public const int AppointmentDuration = 30;
+        public const string currency = "BAM";
+        public const decimal taxRate = 17m;
+        public const string invoicePrefix = "INV";
+        public const string workOrderPrefix = "WO";
+        public const decimal defaultLaborRate = 0m;
+        public const int bookingIntervalMinutes = 30;
+        public const int minimumBookingNoticeHours = 2;
+        public const int maximumBookingDaysAhead = 30;
+        public const bool allowSameDayBooking = true;
+        public const bool requireAppointmentConfirmation = true;
+        public const bool onlineBookingEnabled = false;
 
         public static CompanySettings Create() => new CompanySettings
         {
-            Currency = Currency,
-            TaxRate = TaxRate,
-            InvoicePrefix = InvoicePrefix,
-            WorkOrderPrefix = WorkOrderPrefix,
-            DefaultLaborRate = DefaultLaborRate,
-            AppointmentDuration = AppointmentDuration,
-            CreatedAt = DateTime.Now
+            Currency = currency,
+            TaxRate = taxRate,
+            InvoicePrefix = invoicePrefix,
+            WorkOrderPrefix = workOrderPrefix,
+            DefaultLaborRate = defaultLaborRate,
+            CreatedAt = DateTime.Now,
+            BookingIntervalMinutes = bookingIntervalMinutes,
+            MinimumBookingNoticeHours = minimumBookingNoticeHours,
+            MaximumBookingDaysAhead = maximumBookingDaysAhead,
+            AllowSameDayBooking = allowSameDayBooking,
+            RequireAppointmentConfirmation = requireAppointmentConfirmation,
+            OnlineBookingEnabled = onlineBookingEnabled
         };
     }
 }

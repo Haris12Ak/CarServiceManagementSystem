@@ -24,5 +24,6 @@ namespace Persistence.Entities
         public int CompanyId { get; set; }
 
         public ICollection<WorkOrderServices> WorkOrderServices { get; set; } = new List<WorkOrderServices>();
+        public ICollection<AppointmentServices> AppointmentServices { get; set; } = new List<AppointmentServices>();
     }
 }

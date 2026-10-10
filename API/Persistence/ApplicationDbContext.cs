@@ -29,6 +29,13 @@ namespace Persistence
                 .HasIndex(c => c.Slug)
                 .IsUnique();
 
+            modelBuilder.Entity<AppointmentServices>()
+                .HasIndex(x => new
+                {
+                    x.AppointmentId,
+                    x.ServiceTypeId
+                }).IsUnique();
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -53,5 +60,8 @@ namespace Persistence
         public DbSet<WorkOrderStatusHistories> WorkOrderStatusHistories { get; set; }
         public DbSet<InspectionItemDefinition> InspectionItemDefinition { get; set; }
         public DbSet<InspectionCategories> InspectionCategories { get; set; }
+        public DbSet<CompanyWorkingHours> CompanyWorkingHours { get; set; }
+        public DbSet<CompanyWorkingHourExceptions> CompanyWorkingHourExceptions { get; set; }
+        public DbSet<AppointmentServices> AppointmentServices { get; set; }
     }
 }
