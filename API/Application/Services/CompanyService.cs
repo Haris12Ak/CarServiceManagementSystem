@@ -66,13 +66,15 @@ namespace Application.Services
 
                 var adminEmployee = EmployeeDtoMapper.ToDomain(registration, keycloakUserId);
 
+                adminEmployee.Position = "owner";
+
                 await _companyRepository.CrateCompanyWithAdminAsync(company.ToEntity(), adminEmployee.ToEntity(), cancellationToken);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Company registration failed. Attempting to remove Keycloak user {UserId}", keycloakUserId);
 
-                await RollbackUserAsync(keycloakUserId, cancellationToken);
+                await _keycloakAuthService.RollbackUserAsync(keycloakUserId);
 
                 throw;
             }
@@ -96,13 +98,15 @@ namespace Application.Services
 
                 var employee = request.ToDomain(keycloakUserId, companyId);
 
+                employee.Position = "employee";
+
                 await _employeeRepository.SaveAsync(employee.ToEntity(), cancellationToken);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Adding new employee failed. Attempting to remove Keycloak user {UserId}", keycloakUserId);
 
-                await RollbackUserAsync(keycloakUserId, cancellationToken);
+                await _keycloakAuthService.RollbackUserAsync(keycloakUserId);
 
                 throw;
             }
@@ -132,25 +136,9 @@ namespace Application.Services
             {
                 _logger.LogError(ex, "Adding new client failed. Attempting to remove Keycloak user {UserId}", keycloakUserId);
 
-                await RollbackUserAsync(keycloakUserId, cancellationToken);
+                await _keycloakAuthService.RollbackUserAsync(keycloakUserId);
 
                 throw;
-            }
-        }
-
-        private async Task RollbackUserAsync(string? keycloakUserId, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrEmpty(keycloakUserId))
-                return;
-
-            try
-            {
-                await _keycloakAuthService.DeleteUserAsync(keycloakUserId, cancellationToken);
-                _logger.LogInformation("Compensation: deleted Keycloak user {UserId}", keycloakUserId);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to delete Keycloak user {UserId} after rollback. Schedule manual/automatic cleanup.", keycloakUserId);
             }
         }
 

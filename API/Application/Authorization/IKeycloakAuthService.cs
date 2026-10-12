@@ -11,5 +11,6 @@ namespace Application.Authorization
         Task<string> CreateUserAsync(User user, bool forcePasswordUpdated, CancellationToken cancellationToken);
         Task DeleteUserAsync(string keycloakUserId, CancellationToken cancellationToken);
         Task AssignRoleAsync(string keycloakUserId, string roleName, CancellationToken cancellationToken);
+        Task RollbackUserAsync(string? keycloakUserId);
     }
 }

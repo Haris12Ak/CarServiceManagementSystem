@@ -44,7 +44,6 @@ namespace Application.Mappers
                 LastName = request.AdminEmployee.LastName,
                 Email = request.AdminEmployee.Email,
                 Phone = request.AdminEmployee.Phone,
-                Position = request.AdminEmployee.Position,
                 IsActive = true,
                 CreatedAt = DateTime.Now,
             };
@@ -64,7 +63,6 @@ namespace Application.Mappers
                 Phone = request.Phone,
                 IsActive = true,
                 CreatedAt = DateTime.Now,
-                Position = request.Position,
                 CompanyId = companyId
             };
         }

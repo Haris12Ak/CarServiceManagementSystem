@@ -9,5 +9,6 @@ namespace Persistence.Interfaces
     {
         Task<int?> GetCompanyId(string keycloakUserId, CancellationToken cancellationToken);
         Task<Client> FindByKeycloakId(string keycloakUserId, int comapnyId, CancellationToken cancellationToken);
+        Task<Client> FindByEmailAsync(string email, int companyId, CancellationToken cancellationToken);
     }
 }

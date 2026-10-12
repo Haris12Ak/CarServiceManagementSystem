@@ -3,6 +3,7 @@ using EntityCompany = Persistence.Entities.Companies;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Identity.Client;
 
 namespace Persistence.Mappers
 {
@@ -43,7 +44,10 @@ namespace Persistence.Mappers
                 TaxNumber = entity.TaxNumber,
                 Logo = entity.Logo,
                 IsActive = entity.IsActive,
-                CreatedAt = entity.CreatedAt
+                CreatedAt = entity.CreatedAt,
+                Settings = entity.Settings?.ToDomain(),
+                CompanyWorkingHours = entity.CompanyWorkingHours?.ToDomain() ?? [],
+                CompanyWorkingHourExceptions = entity.CompanyWorkingHourExceptions?.ToDomain() ?? []
             };
         }
     }

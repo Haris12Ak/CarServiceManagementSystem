@@ -6,6 +6,5 @@ namespace Application.Requests
 {
     public class EmployeeInsertRequest : PersonBaseRequest
     {
-        public string Position { get; set; }
     }
 }

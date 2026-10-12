@@ -1,5 +1,6 @@
 ﻿using Application.Requests;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -13,12 +14,14 @@ namespace Application.Authorization
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<KeycloakAuthService> _logger;
         private string _accessToken;
 
-        public KeycloakAuthService(HttpClient httpClient, IConfiguration configuration)
+        public KeycloakAuthService(HttpClient httpClient, IConfiguration configuration, ILogger<KeycloakAuthService> logger)
         {
             _httpClient = httpClient;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task AuthenticateAdminAsync(CancellationToken cancellationToken)
@@ -143,6 +146,32 @@ namespace Application.Authorization
 
             var assignResp = await _httpClient.PostAsync(assignUrl, content, cancellationToken);
             assignResp.EnsureSuccessStatusCode();
+        }
+
+        public async Task RollbackUserAsync(string? keycloakUserId)
+        {
+            if (string.IsNullOrWhiteSpace(keycloakUserId))
+                return;
+
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+                await DeleteUserAsync(
+                    keycloakUserId,
+                    cts.Token);
+
+                _logger.LogInformation(
+                    "Compensation: deleted Keycloak user {UserId}",
+                    keycloakUserId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Failed to delete Keycloak user {UserId} after rollback. Manual cleanup may be required.",
+                    keycloakUserId);
+            }
         }
     }
 }

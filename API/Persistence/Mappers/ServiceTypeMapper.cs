@@ -43,6 +43,27 @@ namespace Persistence.Mappers
             };
         }
 
+        public static EntityServiceType ToExistingEntity(this DomainServiceType domain)
+        {
+            return new EntityServiceType
+            {
+                Id = domain.Id,
+                CompanyId = domain.CompanyId,
+                Name = domain.Name,
+                Description = domain.Description,
+                Price = domain.Price,
+                EstimatedDuration = domain.EstimatedDuration,
+                IsActive = domain.IsActive,
+                CreatedAt = domain.CreatedAt,
+                UpdatedAt = domain.UpdatedAt
+            };
+        }
+
+        public static List<EntityServiceType> ToExistingEntity(this IEnumerable<DomainServiceType> domains)
+        {
+            return domains.Select(domain => domain.ToExistingEntity()).ToList();
+        }
+
         public static void ApplyTo(this DomainServiceType domain, EntityServiceType entity)
         {
             if (domain == null)

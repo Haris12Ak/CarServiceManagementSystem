@@ -36,5 +36,17 @@ namespace Persistence.Repositories
 
             return employee;
         }
+
+        public async Task<int?> FindAvailableEmployeeAsync(int companyId, DateTime start, DateTime end, CancellationToken cancellationToken)
+        {
+            var employeeId = await _context.Employee
+                .AsNoTracking()
+                .Where(e => e.CompanyId == companyId && e.IsActive == true && e.Position == "employee" && !e.Appointments
+                .Any(a => a.ScheduledAt < end && a.ScheduledAt.AddMinutes(a.EstimatedDuration) > start))
+                .Select(e => (int?)e.Id)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return employeeId;
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace Persistence.Interfaces
         Task CrateCompanyWithAdminAsync(Companies company, Employee adminEmployee, CancellationToken cancellationToken);
         Task<bool> IsUserInCompanyAsync(string keycloakUserId, int companyId, CancellationToken cancellationToken);
         Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken);
+        Task<Companies> GetCompanyBySlugAsync(string slug, CancellationToken cancellationToken);
     }
 }

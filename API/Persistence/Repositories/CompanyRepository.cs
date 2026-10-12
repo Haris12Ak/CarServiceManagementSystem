@@ -56,7 +56,7 @@ namespace Persistence.Repositories
             }
             catch
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(CancellationToken.None);
                 throw;
             }
         }
@@ -66,6 +66,24 @@ namespace Persistence.Repositories
             var company = await _context.Companies
                 .AsNoTracking()
                 .Where(x => x.Id == companyId && x.IsActive == true)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (company == null)
+                return null;
+
+            return company;
+        }
+
+        public async Task<Companies> GetCompanyBySlugAsync(string slug, CancellationToken cancellationToken)
+        {
+            var company = await _context.Companies
+                .AsNoTracking()
+                .Include(s => s.Settings)
+                .Include(w => w.CompanyWorkingHours)
+                .Include(e => e.CompanyWorkingHourExceptions)
+                .Where(c =>
+                c.Slug == slug &&
+                c.IsActive == true)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (company == null)

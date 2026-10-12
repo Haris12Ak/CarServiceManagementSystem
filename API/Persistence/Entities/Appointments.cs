@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using Persistence.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace Persistence.Entities
 {
-    public class Appointments
+    public class Appointments : ICompanyEntity
     {
         [Key]
         public int Id { get; set; }

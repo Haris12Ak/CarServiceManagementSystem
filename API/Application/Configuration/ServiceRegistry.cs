@@ -1,6 +1,7 @@
 ﻿using Application.Authorization;
 using Application.Interfaces;
 using Application.Services;
+using Application.Validators;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -28,6 +29,8 @@ namespace Application.Configuration
             services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<ISparePartsService, SparePartsService>();
             services.AddScoped<IInventoryService, InventoryService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IAppointmentBookingValidator, AppointmentBookingValidator>();
 
             return services;
         }

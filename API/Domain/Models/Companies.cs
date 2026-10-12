@@ -19,6 +19,8 @@ namespace Domain.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        public CompanySettings Settings { get; set; }
+        public CompanySettings? Settings { get; set; }
+        public ICollection<CompanyWorkingHours>? CompanyWorkingHours { get; set; }
+        public ICollection<CompanyWorkingHourExceptions>? CompanyWorkingHourExceptions { get; set; }
     }
 }

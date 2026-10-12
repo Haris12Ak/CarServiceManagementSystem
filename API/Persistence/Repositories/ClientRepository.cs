@@ -36,5 +36,20 @@ namespace Persistence.Repositories
             return client;
         }
 
+        public async Task<Client> FindByEmailAsync(string email, int companyId, CancellationToken cancellationToken)
+        {
+            var client = await _context.Client
+                .AsNoTracking()
+                .Where(c =>
+                c.Email == email &&
+                c.CompanyId == companyId &&
+                c.IsActive == true)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (client == null)
+                return null;
+
+            return client;
+        }
     }
 }
