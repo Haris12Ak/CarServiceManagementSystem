@@ -10,6 +10,7 @@ using Domain.Models;
 using Microsoft.Extensions.Logging;
 using Persistence.Interfaces;
 using Persistence.Mappers;
+using Persistence.Repositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -25,6 +26,9 @@ namespace Application.Services
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IKeycloakAuthService _keycloakAuthService;
         private readonly IAppointmentBookingValidator _bookingValidator;
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IVehicleRepository _vehicleRepository;
+        private readonly ICurrentSystemUserService _currentSystemUserService;
         private readonly ILogger<AppointmentService> _logger;
 
         public AppointmentService(
@@ -34,6 +38,9 @@ namespace Application.Services
             IAppointmentRepository appointmentRepository,
             IKeycloakAuthService keycloakAuthService,
             IAppointmentBookingValidator bookingValidator,
+            IEmployeeRepository employeeRepository,
+            IVehicleRepository vehicleRepository,
+            ICurrentSystemUserService currentSystemUserService,
             ILogger<AppointmentService> logger)
         {
             _companyRepository = companyRepository;
@@ -42,7 +49,55 @@ namespace Application.Services
             _appointmentRepository = appointmentRepository;
             _keycloakAuthService = keycloakAuthService;
             _bookingValidator = bookingValidator;
+            _employeeRepository = employeeRepository;
+            _vehicleRepository = vehicleRepository;
+            _currentSystemUserService = currentSystemUserService;
             _logger = logger;
+        }
+
+        public async Task CreateAppointmentAsync(AppointmentRequest request, CancellationToken cancellationToken)
+        {
+            if (request.ServiceTypeId == null || request.ServiceTypeId.Count == 0)
+                throw new BadRequestException("At least one service type must be provided.");
+
+            var companyId = await _currentSystemUserService.GetCompanyIdAsync(cancellationToken);
+
+            var company = await _companyRepository.FindByIdAsync(companyId, cancellationToken);
+
+            var client = await _clientRepository.FindByIdAsync(request.ClientId, companyId, cancellationToken)
+                ?? throw new NotFoundException($"Client with ID - {request.ClientId} not found for this company.");
+
+            var vehicle = await _vehicleRepository.FindByIdAsync(request.VehicleId, companyId, cancellationToken)
+                ?? throw new NotFoundException($"Vehicle with ID - {request.VehicleId} not found for this company.");
+
+            var serviceTypes = await _serviceTypeRepository
+                .FindByIdsAsync(request.ServiceTypeId, companyId, cancellationToken);
+
+            if (serviceTypes.Count > 0 && (serviceTypes.Count != request.ServiceTypeId.Count))
+                throw new NotFoundException("One or more requested service types were not found for this company.");
+
+            var totalEstimatedMinutes = serviceTypes.Sum(s => s.EstimatedDuration);
+
+            await _bookingValidator.ValidateAsync(
+                company.ToDomain(),
+                request.ScheduledAt,
+                totalEstimatedMinutes,
+                cancellationToken);
+
+            var employeeId = await ValidateAppointmentAvailabilityAsync(
+                company.Id,
+                request.ScheduledAt,
+                request.ScheduledAt.AddMinutes(totalEstimatedMinutes),
+                cancellationToken,
+                request.EmployeeId);
+
+            var appointmentDomain = request.ToDomain();
+            appointmentDomain.CompanyId = companyId;
+
+            await _appointmentRepository.SaveAsync(
+                appointmentDomain.ToEntity(totalEstimatedMinutes),
+                serviceTypes,
+                cancellationToken);
         }
 
         public async Task CreatePublicAppointmentAsync(string companySlug, PublicAppointmentRequest request, CancellationToken cancellationToken)
@@ -66,10 +121,16 @@ namespace Application.Services
 
             var totalEstimatedMinutes = serviceTypes.Sum(s => s.EstimatedDuration);
 
-            var employeeId = await _bookingValidator.ValidateAsync(
+            await _bookingValidator.ValidateAsync(
                 company.ToDomain(),
                 request.ScheduledAt,
                 totalEstimatedMinutes,
+                cancellationToken);
+
+            var employeeId = await ValidateAppointmentAvailabilityAsync(
+                company.Id,
+                request.ScheduledAt,
+                request.ScheduledAt.AddMinutes(totalEstimatedMinutes),
                 cancellationToken);
 
             var user = UserMapper.MapToUser(request.Client.FirstName, request.Client.LastName, request.Client.Email, null, null);
@@ -86,7 +147,7 @@ namespace Application.Services
 
             var serviceTypesDomain = serviceTypes.ToDomain();
 
-            await CreateAppointment(
+            await CreatePublicAppointment(
                 clientDomain,
                 vehicleDomain,
                 appointmentDomain,
@@ -97,7 +158,22 @@ namespace Application.Services
                 cancellationToken);
         }
 
-        private async Task CreateAppointment(
+        private async Task<int> ValidateAppointmentAvailabilityAsync(int companyId, DateTime scheduledAt, DateTime appointmentEnd, CancellationToken cancellationToken, int? employeeId = null)
+        {
+            var employee = await _employeeRepository.FindAvailableEmployeeAsync(
+                companyId,
+                scheduledAt,
+                appointmentEnd,
+                cancellationToken,
+                employeeId);
+
+            if (employee == null || employee == 0)
+                throw new BadRequestException("No available employees for the requested time.");
+
+            return employee.Value;
+        }
+
+        private async Task CreatePublicAppointment(
             Client client,
             Vehicles vehicle,
             Appointments appointment,

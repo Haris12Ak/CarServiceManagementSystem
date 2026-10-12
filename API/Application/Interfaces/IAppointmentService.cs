@@ -8,5 +8,7 @@ namespace Application.Interfaces
     public interface IAppointmentService
     {
         Task CreatePublicAppointmentAsync(string companySlug, PublicAppointmentRequest request, CancellationToken cancellationToken);
+        Task CreateAppointmentAsync(AppointmentRequest request, CancellationToken cancellationToken);
+
     }
 }

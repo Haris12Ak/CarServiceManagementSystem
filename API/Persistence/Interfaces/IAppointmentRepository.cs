@@ -9,5 +9,6 @@ namespace Persistence.Interfaces
     {
         Task<bool> HasOverlappingAsync(int companyId, DateTime start, DateTime end, CancellationToken cancellationToken);
         Task SaveAsync(Client client, Vehicles vehicle, Appointments appointment, List<ServiceType> serviceTypes, int employeeId, CancellationToken cancellationToken);
+        Task SaveAsync(Appointments appointment, List<ServiceType> serviceTypes, CancellationToken cancellationToken);
     }
 }

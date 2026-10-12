@@ -10,14 +10,11 @@ namespace Application.Validators
 {
     public class AppointmentBookingValidator : IAppointmentBookingValidator
     {
-        private readonly IEmployeeRepository _employeeRepository;
-
-        public AppointmentBookingValidator(IEmployeeRepository employeeRepository)
+        public AppointmentBookingValidator()
         {
-            _employeeRepository = employeeRepository;
         }
 
-        public async Task<int> ValidateAsync(Companies company, DateTime scheduledAt, int estimatedDuration, CancellationToken cancellationToken)
+        public async Task ValidateAsync(Companies company, DateTime scheduledAt, int estimatedDuration, CancellationToken cancellationToken)
         {
             var settings = company.Settings
                 ?? throw new BadRequestException("Company booking settings not configured.");
@@ -31,14 +28,6 @@ namespace Application.Validators
             ValidateWorkingHours(scheduledAt, appointmentEnd, workingHours);
 
             ValidateBookingInterval(scheduledAt, workingHours.OpenAt, settings.BookingIntervalMinutes);
-
-            var employeeId = await ValidateAppointmentAvailabilityAsync(
-                 company.Id,
-                 scheduledAt,
-                 appointmentEnd,
-                 cancellationToken);
-
-            return employeeId;
         }
 
         private static void ValidateBookingDate(DateTime scheduledAt, CompanySettings settings)
@@ -110,21 +99,6 @@ namespace Application.Validators
             if (minutesFromOpen % bookingIntervalMinutes != 0)
                 throw new BadRequestException($"Requested time must align with booking interval of " + $"{bookingIntervalMinutes} minutes.");
         }
-
-        private async Task<int> ValidateAppointmentAvailabilityAsync(int companyId, DateTime scheduledAt, DateTime appointmentEnd, CancellationToken cancellationToken)
-        {
-            var employeeId = await _employeeRepository.FindAvailableEmployeeAsync(
-                companyId,
-                scheduledAt,
-                appointmentEnd,
-                cancellationToken);
-
-            if (employeeId == null || employeeId == 0)
-                throw new BadRequestException("No available employees for the requested time.");
-
-            return employeeId.Value;
-        }
-
         private sealed record BookingWorkingHours(DateTime OpenAt, DateTime CloseAt);
     }
 }

@@ -37,16 +37,22 @@ namespace Persistence.Repositories
             return employee;
         }
 
-        public async Task<int?> FindAvailableEmployeeAsync(int companyId, DateTime start, DateTime end, CancellationToken cancellationToken)
+        public async Task<int?> FindAvailableEmployeeAsync(int companyId, DateTime start, DateTime end, CancellationToken cancellationToken, int? employeeId = null)
         {
-            var employeeId = await _context.Employee
+            var query = _context.Employee
                 .AsNoTracking()
-                .Where(e => e.CompanyId == companyId && e.IsActive == true && e.Position == "employee" && !e.Appointments
+                .Where(e => e.CompanyId == companyId && e.IsActive == true && e.Position == "employee");
+
+            if (employeeId.HasValue)
+                query = query.Where(e => e.Id == employeeId);
+
+            var availableEmployeeId = await query
+                .Where(e => !e.Appointments
                 .Any(a => a.ScheduledAt < end && a.ScheduledAt.AddMinutes(a.EstimatedDuration) > start))
                 .Select(e => (int?)e.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            return employeeId;
+            return availableEmployeeId;
         }
     }
 }

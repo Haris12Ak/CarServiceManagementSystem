@@ -60,5 +60,36 @@ namespace Persistence.Repositories
                 throw;
             }
         }
+
+        public async Task SaveAsync(Appointments appointment, List<ServiceType> serviceTypes, CancellationToken cancellationToken)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+            try
+            {
+                await _context.Appointments.AddAsync(appointment);
+
+                foreach (var st in serviceTypes)
+                {
+                    appointment.AppointmentServices.Add(new AppointmentServices
+                    {
+                        Appointments = appointment,
+                        ServiceTypeId = st.Id,
+                        Price = st.Price,
+                        EstimatedDuration = st.EstimatedDuration,
+                        CompanyId = appointment.CompanyId
+                    });
+                }
+
+                await _context.SaveChangesAsync(cancellationToken);
+
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 }

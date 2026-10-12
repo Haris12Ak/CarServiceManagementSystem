@@ -7,6 +7,6 @@ namespace Application.Validators
 {
     public interface IAppointmentBookingValidator
     {
-        Task<int> ValidateAsync(Companies company, DateTime scheduledAt, int estimatedDuration, CancellationToken cancellationToken);
+        Task ValidateAsync(Companies company, DateTime scheduledAt, int estimatedDuration, CancellationToken cancellationToken);
     }
 }

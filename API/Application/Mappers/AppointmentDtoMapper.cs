@@ -19,6 +19,20 @@ namespace Application.Mappers
             };
         }
 
+        public static Appointments ToDomain(this AppointmentRequest request)
+        {
+            return new Appointments
+            {
+                ClientId = request.ClientId,
+                VehicleId = request.VehicleId,
+                EmployeeId = request.EmployeeId,
+                ScheduledAt = request.ScheduledAt,
+                Reason = request.Reason,
+                Notes = request.Notes,
+                CreatedAt = DateTime.Now
+            };
+        }
+
         public static Client ToDomain(this PublicClientRequest request)
         {
             return new Client

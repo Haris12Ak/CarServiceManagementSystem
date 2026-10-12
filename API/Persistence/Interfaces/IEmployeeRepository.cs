@@ -9,6 +9,6 @@ namespace Persistence.Interfaces
     {
         Task<int?> GetCompanyIdAsync(string keycloakUserId, CancellationToken cancellationToken);
         Task<Employee> FindByKeycloakIdAsync(string keycloakUserId, int companyId, CancellationToken cancellationToken);
-        Task<int?> FindAvailableEmployeeAsync(int companyId, DateTime start, DateTime end, CancellationToken cancellationToken);
+        Task<int?> FindAvailableEmployeeAsync(int companyId, DateTime start, DateTime end, CancellationToken cancellationToken, int? employeeId = null);
     }
 }

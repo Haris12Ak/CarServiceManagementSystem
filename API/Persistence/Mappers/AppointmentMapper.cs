@@ -15,6 +15,7 @@ namespace Persistence.Mappers
                 ClientId = domain.ClientId,
                 VehicleId = domain.VehicleId,
                 CompanyId = domain.CompanyId,
+                EmployeeId = domain.EmployeeId,
                 ScheduledAt = domain.ScheduledAt,
                 EstimatedDuration = estimatedDuration,
                 Reason = domain.Reason,

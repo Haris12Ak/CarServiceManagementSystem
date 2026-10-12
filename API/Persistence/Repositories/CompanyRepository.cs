@@ -65,6 +65,9 @@ namespace Persistence.Repositories
         {
             var company = await _context.Companies
                 .AsNoTracking()
+                .Include(c => c.Settings)
+                .Include(h => h.CompanyWorkingHours)
+                .Include(e => e.CompanyWorkingHourExceptions)
                 .Where(x => x.Id == companyId && x.IsActive == true)
                 .FirstOrDefaultAsync(cancellationToken);
 
