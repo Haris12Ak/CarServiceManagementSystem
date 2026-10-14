@@ -16,13 +16,15 @@ namespace Application.Services
     {
         private readonly IServiceTypeRepository _serviceTypeRepository;
         private readonly ICurrentSystemUserService _currentSystemUserService;
-
+        private readonly ICompanyRepository _companyRepository;
         public ServiceTypeService(
             IServiceTypeRepository serviceTypeRepository,
-            ICurrentSystemUserService currentSystemUserService)
+            ICurrentSystemUserService currentSystemUserService,
+            ICompanyRepository companyRepository)
         {
             _serviceTypeRepository = serviceTypeRepository;
             _currentSystemUserService = currentSystemUserService;
+            _companyRepository = companyRepository;
         }
 
 
@@ -72,6 +74,16 @@ namespace Application.Services
             var updated = await _serviceTypeRepository.SaveAsync(entity, cancellationToken);
 
             return updated.ToDomain();
+        }
+
+        public async Task<List<ServiceType>> GetByCompanySlugAsync(string companySlug, CancellationToken cancellationToken)
+        {
+            var company = await _companyRepository.GetCompanyBySlugAsync(companySlug, cancellationToken)
+                ?? throw new NotFoundException("Company not found.");
+
+            var serviceTypes = await _serviceTypeRepository.FindByCompanyIdAsync(company.Id, cancellationToken);
+
+            return serviceTypes.ToDomain();
         }
     }
 }

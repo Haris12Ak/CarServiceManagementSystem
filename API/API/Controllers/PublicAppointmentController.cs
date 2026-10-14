@@ -1,24 +1,41 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs;
+using Application.Interfaces;
+using Application.Mappers;
 using Application.Requests;
 using Application.Services;
+using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Persistence.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Controllers
 {
-    [Route("companies/{companySlug}/appointments")]
+    [Route("{companySlug}")]
     [ApiController]
     public class PublicAppointmentController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
+        private readonly IServiceTypeService _serviceTypeService;
 
-        public PublicAppointmentController(IAppointmentService appointmentService)
+        public PublicAppointmentController(
+            IAppointmentService appointmentService,
+            IServiceTypeService serviceTypeService)
         {
             _appointmentService = appointmentService;
+            _serviceTypeService = serviceTypeService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateAppointment(string companySlug, [FromBody] PublicAppointmentRequest request, CancellationToken cancellationToken)
+        [HttpGet("services")]
+        public async Task<List<ServiceTypeDto>> GetAllServices([Required] string companySlug, CancellationToken cancellationToken)
+        {
+            var serviceTypes = await _serviceTypeService.GetByCompanySlugAsync(companySlug, cancellationToken);
+
+            return serviceTypes.ToDto();
+        }
+
+        [HttpPost("create-appointment")]
+        public async Task<IActionResult> CreateAppointment([Required] string companySlug, [FromBody] PublicAppointmentRequest request, CancellationToken cancellationToken)
         {
             try
             {

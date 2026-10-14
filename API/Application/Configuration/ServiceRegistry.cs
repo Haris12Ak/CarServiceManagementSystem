@@ -30,7 +30,6 @@ namespace Application.Configuration
             services.AddScoped<ISparePartsService, SparePartsService>();
             services.AddScoped<IInventoryService, InventoryService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
-            services.AddScoped<IAppointmentBookingValidator, AppointmentBookingValidator>();
 
             return services;
         }

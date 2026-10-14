@@ -12,5 +12,6 @@ namespace Application.Interfaces
         Task<ServiceType> GetServiceTypeByIdAsync(int id, CancellationToken cancellationToken);
         Task<ServiceType> AddServiceTypeAsync(ServiceTypeRequest request, CancellationToken cancellationToken);
         Task<ServiceType> UpdateServiceTypeAsync(int id, ServiceTypeRequest request, CancellationToken cancellationToken);
+        Task<List<ServiceType>> GetByCompanySlugAsync(string companySlug, CancellationToken cancellationToken);
     }
 }

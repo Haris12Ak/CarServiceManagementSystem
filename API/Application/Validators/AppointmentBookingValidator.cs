@@ -8,13 +8,9 @@ using System.Text;
 
 namespace Application.Validators
 {
-    public class AppointmentBookingValidator : IAppointmentBookingValidator
+    public static class AppointmentBookingValidator
     {
-        public AppointmentBookingValidator()
-        {
-        }
-
-        public async Task ValidateAsync(Companies company, DateTime scheduledAt, int estimatedDuration, CancellationToken cancellationToken)
+        public static void Validate(Companies company, DateTime scheduledAt, int estimatedDuration)
         {
             var settings = company.Settings
                 ?? throw new BadRequestException("Company booking settings not configured.");

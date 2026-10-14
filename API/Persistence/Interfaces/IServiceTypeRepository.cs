@@ -5,8 +5,9 @@ using System.Text;
 
 namespace Persistence.Interfaces
 {
-    public interface IServiceTypeRepository : IRepository<ServiceType> 
+    public interface IServiceTypeRepository : IRepository<ServiceType>
     {
         Task<List<ServiceType>> FindByIdsAsync(IEnumerable<int> ids, int companyId, CancellationToken cancellationToken);
+        Task<List<ServiceType>> FindByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
     }
 }

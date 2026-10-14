@@ -12,6 +12,16 @@ namespace Persistence.Repositories
     {
         public ServiceTypeRepository(ApplicationDbContext context) : base(context) { }
 
+        public async Task<List<ServiceType>> FindByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
+        {
+            return await _context.ServiceType
+                .AsNoTracking()
+                .Where(s =>
+                s.CompanyId == companyId &&
+                s.IsActive == true)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<List<ServiceType>> FindByIdsAsync(IEnumerable<int> ids, int companyId, CancellationToken cancellationToken)
         {
             if (ids == null || !ids.Any())

@@ -25,7 +25,6 @@ namespace Application.Services
         private readonly IServiceTypeRepository _serviceTypeRepository;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IKeycloakAuthService _keycloakAuthService;
-        private readonly IAppointmentBookingValidator _bookingValidator;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IVehicleRepository _vehicleRepository;
         private readonly ICurrentSystemUserService _currentSystemUserService;
@@ -37,7 +36,6 @@ namespace Application.Services
             IServiceTypeRepository serviceTypeRepository,
             IAppointmentRepository appointmentRepository,
             IKeycloakAuthService keycloakAuthService,
-            IAppointmentBookingValidator bookingValidator,
             IEmployeeRepository employeeRepository,
             IVehicleRepository vehicleRepository,
             ICurrentSystemUserService currentSystemUserService,
@@ -48,7 +46,6 @@ namespace Application.Services
             _serviceTypeRepository = serviceTypeRepository;
             _appointmentRepository = appointmentRepository;
             _keycloakAuthService = keycloakAuthService;
-            _bookingValidator = bookingValidator;
             _employeeRepository = employeeRepository;
             _vehicleRepository = vehicleRepository;
             _currentSystemUserService = currentSystemUserService;
@@ -78,11 +75,10 @@ namespace Application.Services
 
             var totalEstimatedMinutes = serviceTypes.Sum(s => s.EstimatedDuration);
 
-            await _bookingValidator.ValidateAsync(
+            AppointmentBookingValidator.Validate(
                 company.ToDomain(),
                 request.ScheduledAt,
-                totalEstimatedMinutes,
-                cancellationToken);
+                totalEstimatedMinutes);
 
             var employeeId = await ValidateAppointmentAvailabilityAsync(
                 company.Id,
@@ -121,11 +117,10 @@ namespace Application.Services
 
             var totalEstimatedMinutes = serviceTypes.Sum(s => s.EstimatedDuration);
 
-            await _bookingValidator.ValidateAsync(
+            AppointmentBookingValidator.Validate(
                 company.ToDomain(),
                 request.ScheduledAt,
-                totalEstimatedMinutes,
-                cancellationToken);
+                totalEstimatedMinutes);
 
             var employeeId = await ValidateAppointmentAvailabilityAsync(
                 company.Id,
